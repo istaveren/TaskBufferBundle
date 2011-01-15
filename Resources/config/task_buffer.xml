@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<container xmlns="http://www.symfony-project.org/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.symfony-project.org/schema/dic/services http://www.symfony-project.org/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="task_buffer.task_manager.class">Bundle\TaskBufferBundle\Entity\TaskManager</parameter>
+    </parameters>
+
+    <services>
+        <service id="task_buffer.task_manager" class="%task_buffer.task_manager.class%" shared="true">
+        	<argument type="service" id="doctrine.orm.entity_manager" />
+		</service>
+    </services>
+    
+</container>
