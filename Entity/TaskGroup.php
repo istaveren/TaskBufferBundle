@@ -132,4 +132,15 @@ class TaskGroup
     {
     	$this->failuresLimit = $failuresLimit;
     }    
+    
+    public function execute()
+    {
+    	TODO:
+    	$messages = array();
+    	foreach( $this->tasks as $task )
+    	{
+    		$messages[] = $task->execute();
+    	}
+    	return $messages;
+    }
 }

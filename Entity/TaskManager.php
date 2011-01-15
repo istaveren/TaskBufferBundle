@@ -27,11 +27,7 @@ class TaskManager
 		$this->setGroupByCurrentIdentifier();
 
 		$group = ( is_array( $callable ) ) ? $this->initializeTaskForObject( $callable ) : $this->initializeTaskForMethod( $callable );
-		
-		
-		
-		
-		
+
 		//TODO: zapis grupy (a wraz nia umieszczonego w niej tasku)
 		return $group;
 	}
@@ -77,6 +73,23 @@ class TaskManager
 		return $this->groups->get( $this->currentGroupIdentifier );
 	}
 	
+	public function pull( $limit, $ignoreFailures )
+	{
+        $em = $this->get('doctrine.orm.entity_manager');
+        $query = $em->createQuery( "SELECT t, tg FROM \Bundle\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE t.executedAt is NULL AND tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) ORDER BY tg.priority DESC, t.createdAt ASC" )
+    		->setMaxResults( $limit );
+		$taskGroups = $query->getResult();
+		
+		$messages = array();
+		
+		foreach( $taskGroups as $taskGroup )
+		{
+			$messages[] = $taskGroup->execute();
+		}
+		
+		return $messages;
+	}
+	
 	private function initializeGroup()
 	{
 		//Inizjalizacja obiketu grupy i zwrocenie go
@@ -86,5 +99,7 @@ class TaskManager
 		$group->setFailuresLimit( 3 );
 		return $group;
 	}
+	
+	
 	
 }

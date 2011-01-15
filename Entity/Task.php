@@ -180,4 +180,18 @@ class Task
     {
     	$this->failuresCount = $failuresCount;
     }    
+    
+    public function execute()
+    {
+    	if( isset( $this->object ) )
+    	{
+    		try{
+    			return call_user_func( array( $this->object, $this->callable ) );	
+    		}
+    		catch(Exception $e)
+    		{
+    			return false;
+    		}
+    	}
+    }
 }
