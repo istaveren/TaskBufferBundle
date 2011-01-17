@@ -75,8 +75,7 @@ class TaskManager
 	
 	public function pull( $limit, $ignoreFailures )
 	{
-        $em = $this->get('doctrine.orm.entity_manager');
-        $query = $em->createQuery( "SELECT t, tg FROM \Bundle\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE t.executedAt is NULL AND tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) ORDER BY tg.priority DESC, t.createdAt ASC" )
+        $query = $this->em->createQuery( "SELECT t, tg FROM \Bundle\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE t.executedAt is NULL AND tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) ORDER BY tg.priority DESC, t.createdAt ASC" )
     		->setMaxResults( $limit );
 		$taskGroups = $query->getResult();
 		
@@ -84,7 +83,7 @@ class TaskManager
 		
 		foreach( $taskGroups as $taskGroup )
 		{
-			$messages[] = $taskGroup->execute();
+			$messages[] = $taskGroup->execute( $ignoreFailures );	
 		}
 		
 		return $messages;

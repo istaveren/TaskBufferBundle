@@ -133,13 +133,28 @@ class TaskGroup
     	$this->failuresLimit = $failuresLimit;
     }    
     
-    public function execute()
+    public function execute( $ignoreFailures )
     {
-    	TODO:
+    	//TODO: $ignoreFailures == false brake execution on any error!
     	$messages = array();
     	foreach( $this->tasks as $task )
     	{
-    		$messages[] = $task->execute();
+			$timeStart = microtime();				
+				
+			try 
+			{
+    			$message = $task->execute( $timeStart );
+    		}
+    		catch( Exception $e )
+    		{
+				$task->setFailuresCount( $this->getFailuresCount() + 1 );
+				$task->setErrorCode( self::ERROR_CODE_RUNTIME_EXCEPTION );
+				$this->setExecutedAt( date_create( "now" ) );
+				$this->setDuration( microtime() - $timeStart );
+				$errorCode = self::ERROR_CODE_RUNTIME_EXCEPTION;
+				$message = "{$task->prefixMessage()} Error code: {$errorCode}!";
+    		}
+    		$messages = $message;
     	}
     	return $messages;
     }

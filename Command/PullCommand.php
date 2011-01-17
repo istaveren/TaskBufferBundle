@@ -48,17 +48,15 @@ class PullCommand extends Command
          	$limit = ( !isset( $limit ) ) ? 10 : $limit;
          }
          
-         $taskManager = $this->get( 'task_buffer.task_manager' );
+         $taskManager = $this->container->get( 'task_buffer.task_manager' );
          $messages = $taskManager->pull( $limit, $ignoreFailures );
          
-         
-		
-         
-         
-		//$output->setDecorated( true ); 
-        $output->write( ":) {$limit}", 1 );
-		
-         
+         foreach( $messages as $message )
+         {
+         	//TODO: set message for logger and consle
+        	$output->write( $message, 1 ); 	
+         }
+    		
     }
 	
 	

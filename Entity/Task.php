@@ -11,6 +11,9 @@ use Bundle\TaskBufferBundle\Entity\TaskGroup;
  */
 class Task
 {
+	const ERROR_CODE_INVALID_CALLABACK = 1;
+	const ERROR_CODE_RUNTIME_EXCEPTION = 2;
+	
     /**
      * @orm:Id
      * @orm:Column(name="task_id", type="integer")
@@ -39,7 +42,13 @@ class Task
     /**
      * @orm:Column(name="duration", type="integer", nullable="true")
      */
-	protected $duration;    
+	protected $duration;
+
+	/**
+	 * 
+	 * @orm:Column(name="error_code", type="integer", nullable="false");
+	 */
+	protected $errorCode;
 
     /**
      * @orm:Column(name="failures_count", type="integer")
@@ -130,16 +139,6 @@ class Task
     	return $this->duration;
     }
 
-    public function getFailCount()
-    {
-    	return $this->failCount;
-    }
-
-    public function setFailCount( $failCount )
-    {
-    	$this->failCount = $failCount;
-    }
-
     public function getCreatedAt()
     {
     	return $this->createdAt;
@@ -170,7 +169,17 @@ class Task
     {
     	return $this->executedAt;
     }    
-    
+
+    public function getErrorCode()
+    {
+    	return $this->errorCode;
+    }    
+
+    public function setErrorCode( $errorCode )
+    {
+    	$this->errorCode = $errorCode;
+    }
+        
     public function getFailuresCount()
     {
     	return $this->failuresCount;
@@ -181,17 +190,51 @@ class Task
     	$this->failuresCount = $failuresCount;
     }    
     
-    public function execute()
+    public function execute( $timeStart )
     {
-    	if( isset( $this->object ) )
-    	{
-    		try{
-    			return call_user_func( array( $this->object, $this->callable ) );	
-    		}
-    		catch(Exception $e)
-    		{
-    			return false;
-    		}
-    	}
+    	$message = ( !isset( $this->object ) ) ? 
+    		$this->callCallable( $timeStart ):
+    		$this->callCallableOnObject( $timeStart );
+    	
+		$this->setExecutedAt( date_create( "now" ) );
+		$this->setDuration( microtime() - $timeStart );
+		return $message;
+    }
+    
+    private function callCallable( $timeStart )
+    {
+   		if( is_callable( array( $this->object, $this->callable ) ) )
+		{
+			call_user_func( array( $this->object, $this->callable ) );
+			$message = "{$this->prefixMessage()} Task executed successfully.";
+		}
+		else
+		{
+			$this->setErrorCode( self::ERROR_CODE_INVALID_CALLABACK );
+			$errorCode = self::ERROR_CODE_INVALID_CALLABACK;
+			$message = "{$this->prefixMessage()} Error code: {$errorCode}!";
+		}
+		return $message;
+    }
+
+    private function callCallableOnObject( $timeStart )
+    {
+   		if( is_callable( $this->callable ) )
+		{
+			call_user_func( array( $this->object, $this->callable ) );
+			$message = "{$this->prefixMessage()} Task executed successfully.";
+		}
+		else
+		{
+			$this->setErrorCode( self::ERROR_CODE_INVALID_CALLABACK );
+			$errorCode = self::ERROR_CODE_INVALID_CALLABACK;
+			$message = "{$this->prefixMessage()} Error code: {$errorCode}!";
+		}
+		return $message;
+    }
+        
+    public function prefixMessage()
+    {
+    	return "Task: {$this->getTaskId()} from group: {$this->getTaskGroup()->getTaskGroupId()}.";
     }
 }
