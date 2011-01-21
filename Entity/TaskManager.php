@@ -91,7 +91,7 @@ class TaskManager
 	
 	private function initializeGroup()
 	{
-		//Inizjalizacja obiketu grupy i zwrocenie go
+		//Inizjalizacja obiektu grupy i zwrocenie go
 		$group = new TaskGroup();
 		$group->setIdentifier( $this->currentGroupIdentifier );
 		$group->setPriority( 100 );
