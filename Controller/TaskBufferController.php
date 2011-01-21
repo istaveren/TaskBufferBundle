@@ -51,7 +51,7 @@ class TaskBufferController extends Controller
 //		var_dump( $taskGroup[0]->getTasks() );
     	
     	
-		return $this->render( 'TaskBufferBundle:TaskBuffer:tasks.php', array( 'taskGroups' => $taskGroups ) );
+		return $this->render( 'TaskBufferBundle:TaskBuffer:tasks.php.html', array( 'taskGroups' => $taskGroups ) );
     }
     
     public function taskDeleteAction()
