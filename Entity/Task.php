@@ -3,6 +3,7 @@
 namespace Bundle\TaskBufferBundle\Entity;
 
 use Bundle\TaskBufferBundle\Entity\TaskGroup;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @orm:Entity
@@ -67,6 +68,8 @@ class Task
      */
     protected $executedAt;
 
+    private $output;
+    
 	public function __construct(){}
 
     public function setTaskId( $taskId )
@@ -190,8 +193,15 @@ class Task
     	$this->failuresCount = $failuresCount;
     }    
     
-    public function execute( $timeStart )
+    public function setOutput( OutputInterface $output )
+	{
+		$this->output = $output;
+	}
+    
+    public function execute()
     {
+    	$timeStart = Tools::timeInMicroseconds( microtime() );
+    	
     	$message = ( !isset( $this->object ) ) ? 
     		$this->callCallable( $timeStart ):
     		$this->callCallableOnObject( $timeStart );
@@ -217,20 +227,32 @@ class Task
 		return $message;
     }
 
-    private function callCallableOnObject( $timeStart )
+    private function callCallableOnObject()
     {
+    	$timeStart = Tools::timeInMicroseconds( microtime() );
+    	
    		if( is_callable( $this->callable ) )
 		{
 			call_user_func( array( $this->object, $this->callable ) );
-			$message = "{$this->prefixMessage()} Task executed successfully.";
+			$message = "{$this->prefixMessage()} Task executed successfully. ";
 		}
 		else
 		{
 			$this->setErrorCode( self::ERROR_CODE_INVALID_CALLABACK );
 			$errorCode = self::ERROR_CODE_INVALID_CALLABACK;
-			$message = "{$this->prefixMessage()} Error code: {$errorCode}!";
+			$message = "{$this->prefixMessage()} Error code: {$errorCode}! ";
 		}
-		return $message;
+		
+		$this->setExecutedAt( date_create( "now" ) );
+		$this->setDuration( ( Tools::timeInMicroseconds( microtime() ) - $timeStart ) );
+		
+		$message .= "Duration:  {$this->getDuration()} µs.";
+		
+		if( isset( $this->output ) )
+		{
+			$this->output->write( $message, 1 );	
+		}
+		
     }
         
     public function prefixMessage()

@@ -6,6 +6,7 @@ use Bundle\TaskBufferBundle\Entity\Task;
 use Bundle\TaskBufferBundle\Entity\TaskGroup;
 use Bundle\TaskBufferBundle\Entity\TaskBufferException;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class TaskManager
 {
@@ -14,12 +15,19 @@ class TaskManager
 	private $groups;
 	
 	private $currentGroupIdentifier;
+	
+	private $output;
 
 	public function __construct( $em )
 	{
 		$this->em = $em;
 		$this->groups = new ArrayCollection();
 	} 
+	
+	public function setOutput( OutputInterface $output )
+	{
+		$this->output = $output;
+	}
 	
 	public function queue( $callable, $groupIdentifier = 'standard' )
 	{
@@ -79,19 +87,16 @@ class TaskManager
     		->setMaxResults( $limit );
 		$taskGroups = $query->getResult();
 		
-		$messages = array();
-		
 		foreach( $taskGroups as $taskGroup )
 		{
-			$messages[] = $taskGroup->execute( $ignoreFailures );	
+			$taskGroup->setOutput( $this->output );
+			$taskGroup->execute( $ignoreFailures );	
 		}
-		
-		return $messages;
 	}
 	
 	private function initializeGroup()
 	{
-		//Inizjalizacja obiektu grupy i zwrocenie go
+		//Inicjalizacja obiektu grupy i zwrocenie go
 		$group = new TaskGroup();
 		$group->setIdentifier( $this->currentGroupIdentifier );
 		$group->setPriority( 100 );

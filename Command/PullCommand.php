@@ -40,24 +40,16 @@ class PullCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
     	//TODO:          
-         $ignoreFailures = $input->getArgument('ignore-failures');
+         $ignoreFailures = $input->getArgument( 'ignore-failures' );
 
-         $limit = $input->getArgument('limit');
+         $limit = $input->getArgument( 'limit' );
          if( !isset( $limit ) )
          {
          	$limit = ( !isset( $limit ) ) ? 10 : $limit;
          }
          
          $taskManager = $this->container->get( 'task_buffer.task_manager' );
-         $messages = $taskManager->pull( $limit, $ignoreFailures );
-         
-         foreach( $messages as $message )
-         {
-         	//TODO: set message for logger and consle
-        	$output->write( $message, 1 ); 	
-         }
-    		
+         $taskManager->setOutput( $output );
+         $taskManager->pull( $limit, $ignoreFailures );
     }
-	
-	
 }

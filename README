@@ -28,4 +28,14 @@ For: https://github.com/symfony/symfony-sandbox rev: 59879d952e7a7847e9ed.
 	    auto_generate_proxy_classes: %kernel.debug%
 	    mappings:
 	        TaskBufferBundle: ~
+	    
+  //app/phpunit.xml.dist
+  <testsuites>
+      <testsuite name="Project Test Suite">
+          ...
+          <directory>../src/Bundle/*/Tests</directory>
+          ...
+      </testsuite>
+  </testsuites>
+	        
   

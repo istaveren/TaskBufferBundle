@@ -3,6 +3,7 @@
 namespace Bundle\TaskBufferBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @orm:Entity
@@ -52,6 +53,8 @@ class TaskGroup
      * @orm:Column(name="failures_limit", type="integer")
      */    
     protected $failuresLimit;
+    
+    private $output;
 
     public function __construct()
     {
@@ -133,17 +136,23 @@ class TaskGroup
     	$this->failuresLimit = $failuresLimit;
     }    
     
+    public function setOutput( OutputInterface $output )
+	{
+		$this->output = $output;
+	}
+    
     public function execute( $ignoreFailures )
     {
     	//TODO: $ignoreFailures == false brake execution on any error!
-    	$messages = array();
     	foreach( $this->tasks as $task )
     	{
-			$timeStart = microtime();				
+    		$task->setOutput( $this->output );
+    		
+			$timeStart = Tools::timeInMicroseconds( microtime() );				
 				
 			try 
 			{
-    			$message = $task->execute( $timeStart );
+    			$message = $task->execute();
     		}
     		catch( Exception $e )
     		{
@@ -152,10 +161,14 @@ class TaskGroup
 				$this->setExecutedAt( date_create( "now" ) );
 				$this->setDuration( microtime() - $timeStart );
 				$errorCode = self::ERROR_CODE_RUNTIME_EXCEPTION;
-				$message = "{$task->prefixMessage()} Error code: {$errorCode}!";
+				$message = "{$task->prefixMessage()} Error code: {$errorCode}! ";
+				$message .= "Duration:  {$this->getDuration()} µs.";
     		}
-    		$messages = $message;
+    		
+    		if( isset( $this->output ) )
+			{
+				$this->output->write( $message, 1 );	
+			}
     	}
-    	return $messages;
     }
 }
