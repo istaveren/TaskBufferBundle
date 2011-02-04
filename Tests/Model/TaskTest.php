@@ -9,6 +9,9 @@ use Bundle\TaskBufferBundle\Entity\Task;
 use Bundle\TaskBufferBundle\Entity\TaskGroup;
 
 
+//static method callback: EmailSender::send
+//object method callback: array( $this, 'statusUpdated' )
+
 class TaskTest extends WebTestCase
 {
 	public function invalidCallbackTasks()
@@ -30,14 +33,14 @@ class TaskTest extends WebTestCase
     	$task2->setTaskId( 2 );
     	$task2->setTaskGroup( $taskGroup1 );
     	$task2->setCallable( 'invalidCallbackX' );
-    	$task2->setFailuresCount( 2 );
+    	$task2->setFailuresCount( 0 );
     	$task2->setCreatedAt( '2011-02-19 12:10:35' );
 
     	$task3 = new Task();
     	$task3->setTaskId( 3 );
     	$task3->setTaskGroup( $taskGroup1 );
     	$task3->setCallable( 'zooom' );
-    	$task3->setFailuresCount( 2 );
+    	$task3->setFailuresCount( 0 );
     	$task3->setCreatedAt( '2010-12-10 02:11:34' );
     	
     	return array( 
@@ -48,18 +51,22 @@ class TaskTest extends WebTestCase
     		) 
     	);
 	}
-	
+
 	/**
 	 * 
 	 * @dataProvider invalidCallbackTasks
 	 */
-    public function testExecuteTask( $task )
+    public function testExecuteInvalidCallbackTask( $task )
     {
     	$task->execute();
     	
         $this->assertTrue( $task->getDuration() != null );
         $this->assertTrue( $task->getExecutedAt() != null );
-        $this->assertEquals( $task->getErrorCode(), Task::ERROR_CODE_INVALID_CALLABACK );
+        $this->assertEquals( Task::ERROR_CODE_INVALID_CALLABACK , $task->getErrorCode() );
+        $this->assertEquals( 1, $task->getFailuresCount() );
+    }
 
-    }	
+    
+    
+   
 }

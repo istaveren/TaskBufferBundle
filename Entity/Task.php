@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Task
 {
+	const ERROR_CODE_SUCCESS = 0;
 	const ERROR_CODE_INVALID_CALLABACK = 1;
 	const ERROR_CODE_RUNTIME_EXCEPTION = 2;
 	
@@ -203,7 +204,7 @@ class Task
     	$timeStart = Tools::timeInMicroseconds( microtime() );
     	
     	$message = ( !isset( $this->object ) ) ? 
-    		$this->callCallable( $timeStart ):
+    		$this->callCallable( $timeStart ) :
     		$this->callCallableOnObject( $timeStart );
     	
 		$this->setExecutedAt( date_create( "now" ) );
@@ -220,28 +221,42 @@ class Task
 		}
 		else
 		{
-			$this->setErrorCode( self::ERROR_CODE_INVALID_CALLABACK );
 			$errorCode = self::ERROR_CODE_INVALID_CALLABACK;
-			$message = "{$this->prefixMessage()} Error code: {$errorCode}!";
+			$this->setErrorCode( $errorCode );
+			$message = "{$this->prefixMessage()} Error code: {$errorCode}! ";
+			$this->setFailuresCount( $this->getFailuresCount() + 1 );
 		}
-		return $message;
+		$message .= "Duration:  {$this->getDuration()} µs.";
+		
+		if( isset( $this->output ) )
+		{
+			$this->output->write( $message, 1 );	
+		}
     }
 
     private function callCallableOnObject()
     {
     	$timeStart = Tools::timeInMicroseconds( microtime() );
     	
-   		if( is_callable( $this->callable ) )
+    	
+    	if( is_callable( array( $this->object, $this->callable ) ) )
 		{
 			call_user_func( array( $this->object, $this->callable ) );
-			$message = "{$this->prefixMessage()} Task executed successfully. ";
+			
+			$errorCode = self::ERROR_CODE_SUCCESS;
+			$this->setErrorCode( $errorCode );
+			$message = "{$this->prefixMessage()} {$this->executionResult( $errorCode )}. ";
 		}
 		else
 		{
-			$this->setErrorCode( self::ERROR_CODE_INVALID_CALLABACK );
 			$errorCode = self::ERROR_CODE_INVALID_CALLABACK;
-			$message = "{$this->prefixMessage()} Error code: {$errorCode}! ";
+			$this->setErrorCode( $errorCode );
+			$message = "{$this->prefixMessage()} {$this->executionResult( $errorCode )}. ";
+			$this->setFailuresCount( $this->getFailuresCount() + 1 );
 		}
+//TODO: Dwa taski dziedziczae po jednej klasie na wspolnej tabeli z jedna metoda call.		
+//TODO: Przemyslec modelpod wzgledem pola okreslajacego poprawne wykonanie
+//TODO: czy executedAt oznacza poprawne wykonanie czy takze probe wykonania?
 		
 		$this->setExecutedAt( date_create( "now" ) );
 		$this->setDuration( ( Tools::timeInMicroseconds( microtime() ) - $timeStart ) );
@@ -252,11 +267,15 @@ class Task
 		{
 			$this->output->write( $message, 1 );	
 		}
-		
     }
         
     public function prefixMessage()
     {
     	return "Task: {$this->getTaskId()} from group: {$this->getTaskGroup()->getTaskGroupId()}.";
+    }
+    
+    public function executionResult( $errorCode )
+    {
+    	return "[Code: $errorCode]";
     }
 }

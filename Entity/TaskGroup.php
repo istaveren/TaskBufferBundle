@@ -13,7 +13,7 @@ class TaskGroup
 {
     /**
      * @orm:Id
-     * @orm:Column(name="task_group_id", type="integer")
+     * @orm:Column(name="task_group_id", type="integer" )
      * @orm:GeneratedValue
      */
 	protected $taskGroupId;
@@ -141,28 +141,31 @@ class TaskGroup
 		$this->output = $output;
 	}
     
-    public function execute( $ignoreFailures )
+    public function execute( $ignoreFailures = true )
     {
     	//TODO: $ignoreFailures == false brake execution on any error!
     	foreach( $this->tasks as $task )
     	{
-    		$task->setOutput( $this->output );
-    		
+            if( isset( $this->output ) )
+            {
+    		    $task->setOutput( $this->output );
+            }
+            
 			$timeStart = Tools::timeInMicroseconds( microtime() );				
 				
 			try 
 			{
     			$message = $task->execute();
     		}
-    		catch( Exception $e )
+    		catch( \Exception $e )
     		{
-				$task->setFailuresCount( $this->getFailuresCount() + 1 );
-				$task->setErrorCode( self::ERROR_CODE_RUNTIME_EXCEPTION );
-				$this->setExecutedAt( date_create( "now" ) );
-				$this->setDuration( microtime() - $timeStart );
-				$errorCode = self::ERROR_CODE_RUNTIME_EXCEPTION;
-				$message = "{$task->prefixMessage()} Error code: {$errorCode}! ";
-				$message .= "Duration:  {$this->getDuration()} µs.";
+				$task->setFailuresCount( $task->getFailuresCount() + 1 );
+				$task->setErrorCode( Task::ERROR_CODE_RUNTIME_EXCEPTION );
+				$task->setExecutedAt( date_create( "now" ) );
+				$task->setDuration( microtime() - $timeStart );
+				$errorCode = Task::ERROR_CODE_RUNTIME_EXCEPTION;
+				$message = "{$task->prefixMessage()} {$task->executionResult( $errorCode )}. ";
+				$message .= "Duration:  {$task->getDuration()} µs.";
     		}
     		
     		if( isset( $this->output ) )

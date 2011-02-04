@@ -83,7 +83,8 @@ class TaskManager
 	
 	public function pull( $limit, $ignoreFailures )
 	{
-        $query = $this->em->createQuery( "SELECT t, tg FROM \Bundle\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE t.executedAt is NULL AND tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) ORDER BY tg.priority DESC, t.createdAt ASC" )
+		$codeSuccess = Task::ERROR_CODE_SUCCESS;
+        $query = $this->em->createQuery( "SELECT t, tg FROM \Bundle\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) AND ( t.errorCode IS NULL OR t.errorCode != $codeSuccess ) ORDER BY tg.priority DESC, t.createdAt ASC" )
     		->setMaxResults( $limit );
 		$taskGroups = $query->getResult();
 		
