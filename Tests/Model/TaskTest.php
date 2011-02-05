@@ -6,6 +6,7 @@ use Bundle\TaskBufferBundle\Entity\Tools;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Bundle\TaskBufferBundle\Entity\Task;
+use Bundle\TaskBufferBundle\Entity\TaskCallable;
 use Bundle\TaskBufferBundle\Entity\TaskGroup;
 
 
@@ -22,7 +23,7 @@ class TaskTest extends WebTestCase
     	$taskGroup1->setPriority( 100 );
     	$taskGroup1->setFailuresLimit( 3 );
     	
-    	$task1 = new Task();
+    	$task1 = new TaskCallable();
     	$task1->setTaskId( 1 );
     	$task1->setTaskGroup( $taskGroup1 );
     	$task1->setCallable( 'a' );
@@ -30,7 +31,7 @@ class TaskTest extends WebTestCase
     	$task1->setFailuresCount( 0 );
     	$task1->setCreatedAt( '2011-01-17 22:00:15' );
 
-    	$task2 = new Task();
+    	$task2 = new TaskCallable();
     	$task2->setTaskId( 2 );
     	$task2->setTaskGroup( $taskGroup1 );
     	$task2->setCallable( 'invalidCallbackX' );
@@ -38,7 +39,7 @@ class TaskTest extends WebTestCase
     	$task2->setFailuresCount( 0 );
     	$task2->setCreatedAt( '2011-02-19 12:10:35' );
 
-    	$task3 = new Task();
+    	$task3 = new TaskCallable();
     	$task3->setTaskId( 3 );
     	$task3->setTaskGroup( $taskGroup1 );
     	$task3->setCallable( 'zooom' );

@@ -7,6 +7,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @orm:Entity
+ * @orm:InheritanceType("SINGLE_TABLE")
+ * @orm:DiscriminatorColumn(name="discr", type="string")
+ * @orm:DiscriminatorMap({"task_callable" = "TaskCallable", "task_callable_on_object" = "TaskCallableOnObject"})
  * @orm:Table(name="bundletaskbuffer_task")
  * @orm:HasLifecycleCallbacks
  */
@@ -34,13 +37,6 @@ class Task
      * @orm:Column(name="callable", type="string", length="255")
      */
     protected $callable;
-
-    /**
-     * @orm:Column(name="object", type="object", nullable="true")
-     *
-     * @validation:NotBlank()
-     */
-    protected $object;
 
     /**
      * @orm:Column(name="duration", type="bigint", nullable="true")
@@ -126,16 +122,6 @@ class Task
         return $this->callable;
     }
 
-    public function setObject( $object )
-    {
-        $this->object = $object;
-    }
-
-    public function getObject()
-    {
-        return $this->object;
-    }
-
     public function setDuration( $duration )
     {
         $this->duration = $duration;
@@ -204,74 +190,74 @@ class Task
 
     //TODO: Dwa taski dziedziczae po jednej klasie na wspolnej tabeli z jedna metoda call.
             
-    public function execute()
-    {
-        $timeStart = Tools::timeInMicroseconds();
-         
-        $object = $this->getObject();
-        $message = ( !isset( $object ) ) ?
-            $this->callCallable( $timeStart ) :
-            $this->callCallableOnObject( $timeStart );
-         
-        $this->setExecutedAt( date_create( "now" ) );
-        
-        $timeEnd = Tools::timeInMicroseconds();
-        $microseconds = (int)( ( $timeEnd - $timeStart ) * 1000000 );
-
-        $this->setDuration( $microseconds );
-        
-        $message .= "Duration:  {$this->getDuration()} µs.";
-
-        if( isset( $this->output ) )
-        {
-            $this->output->write( $message, 1 );
-        }        
-        
-        return $message;
-    }
+//    public function execute()
+//    {
+//        $timeStart = Tools::timeInMicroseconds();
+//         
+//        $object = $this->getObject();
+//        $message = ( !isset( $object ) ) ?
+//            $this->callCallable( $timeStart ) :
+//            $this->callCallableOnObject( $timeStart );
+//         
+//        $this->setExecutedAt( date_create( "now" ) );
+//        
+//        $timeEnd = Tools::timeInMicroseconds();
+//        $microseconds = (int)( ( $timeEnd - $timeStart ) * 1000000 );
+//
+//        $this->setDuration( $microseconds );
+//        
+//        $message .= "Duration:  {$this->getDuration()} µs.";
+//
+//        if( isset( $this->output ) )
+//        {
+//            $this->output->write( $message, 1 );
+//        }        
+//        
+//        return $message;
+//    }
 
     
-    private function callCallable( $timeStart )
-    {
-        if( is_callable( $this->getCallable() ) )
-        {
-            call_user_func( $this->getCallable() );
-            $status = self::STATUS_SUCCESS;
-            $this->setStatus( $status );
-            $message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
-        }
-        else
-        {
-            $status = self::STATUS_INVALID_CALLABACK;
-            $this->setstatus( $status );
-            $message = "{$this->prefixMessage()} status: {$status}! ";
-            $this->setFailuresCount( $this->getFailuresCount() + 1 );
-        }
-        
-        return $message; 
-    }
+//    private function callCallable( $timeStart )
+//    {
+//        if( is_callable( $this->getCallable() ) )
+//        {
+//            call_user_func( $this->getCallable() );
+//            $status = self::STATUS_SUCCESS;
+//            $this->setStatus( $status );
+//            $message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
+//        }
+//        else
+//        {
+//            $status = self::STATUS_INVALID_CALLABACK;
+//            $this->setstatus( $status );
+//            $message = "{$this->prefixMessage()} status: {$status}! ";
+//            $this->setFailuresCount( $this->getFailuresCount() + 1 );
+//        }
+//        
+//        return $message; 
+//    }
 
-    private function callCallableOnObject( $timeStart )
-    {
-         
-        if( is_callable( array( $this->getObject(), $this->getCallable() ) ) )
-        {
-            call_user_func( array( $this->getObject(), $this->getCallable() ) );
-             
-            $status = self::STATUS_SUCCESS;
-            $this->setStatus( $status );
-            $message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
-        }
-        else
-        {
-            $status = self::STATUS_INVALID_CALLABACK;
-            $this->setstatus( $status );
-            $message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
-            $this->setFailuresCount( $this->getFailuresCount() + 1 );
-        }
-
-        return $message;
-    }
+//    private function callCallableOnObject( $timeStart )
+//    {
+//         
+//        if( is_callable( array( $this->getObject(), $this->getCallable() ) ) )
+//        {
+//            call_user_func( array( $this->getObject(), $this->getCallable() ) );
+//             
+//            $status = self::STATUS_SUCCESS;
+//            $this->setStatus( $status );
+//            $message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
+//        }
+//        else
+//        {
+//            $status = self::STATUS_INVALID_CALLABACK;
+//            $this->setstatus( $status );
+//            $message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
+//            $this->setFailuresCount( $this->getFailuresCount() + 1 );
+//        }
+//
+//        return $message;
+//    }
 
     public function prefixMessage()
     {

@@ -57,17 +57,24 @@ class TaskManager
 		}
 	}
 	
-	public function initializeTaskForObject( $callableWithObject )
+	private function checkArrayForCallableWithObject( $callableWithObject )
 	{
 		if( !isset( $callableWithObject[0] ) || !isset( $callableWithObject[1] ) )
 		{
 			throw new TaskBufferException( "Callable improperly set!" );
 		}
-		
+	}
+	
+	public function initializeTaskForObject( $callableWithObject )
+	{
+		$this->checkArrayForCallableWithObject( $callableWithObject );
 		$object = $callableWithObject[0];
 		$callable = $callableWithObject[1];
-		$task = $this->initializeTask( $callable );
 		
+		//TODO: initialization form IoC Container!
+		$task = new TaskCallableOnObject();
+		$task = $this->initializeTask( $task );
+		$task->setCallable( $callable );
 		$task->setObject( $object );		
 
 		return $this->groups->get( $this->currentGroupIdentifier );
@@ -75,15 +82,15 @@ class TaskManager
 	 
 	public function initializeTaskForMethod( $callable )
 	{
-		$task = $this->initializeTask( $callable );
-		
+		//TODO: initialization form IoC Container!	    
+	    $task = new TaskCallable();
+		$task = $this->initializeTask( $task );
+		$task->setCallable( $callable );
 		return $this->groups->get( $this->currentGroupIdentifier );
 	}
 	
-	private function initializeTask( $callable )
+	private function initializeTask( $task )
 	{
-		$task = new Task();
-		$task->setCallable( $callable );
 		$task->setFailuresCount( 0 );
 		$task->setStatus( Task::STATUS_AWAITING );
 		$this->groups->get( $this->currentGroupIdentifier )->addTask( $task );

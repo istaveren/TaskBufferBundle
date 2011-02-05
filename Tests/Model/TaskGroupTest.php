@@ -6,6 +6,7 @@ use Bundle\TaskBufferBundle\Entity\Tools;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Bundle\TaskBufferBundle\Entity\Task;
+use Bundle\TaskBufferBundle\Entity\TaskCallableOnObject;
 use Bundle\TaskBufferBundle\Tests\Model\ObjectX;
 use Bundle\TaskBufferBundle\Entity\TaskGroup;
 
@@ -24,7 +25,7 @@ class TaskGroupTest extends WebTestCase
     	$taskGroup1->setPriority( 100 );
     	$taskGroup1->setFailuresLimit( 3 );
     	
-    	$task1 = new Task();
+    	$task1 = new TaskCallableOnObject();
     	$task1->setTaskId( 1 );
     	$task1->setTaskGroup( $taskGroup1 );
     	$task1->setCallable( 'someMethod' );
