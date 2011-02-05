@@ -26,6 +26,7 @@ class TaskTest extends WebTestCase
     	$task1->setTaskId( 1 );
     	$task1->setTaskGroup( $taskGroup1 );
     	$task1->setCallable( 'a' );
+    	$task1->setStatus( Task::STATUS_AWAITING );
     	$task1->setFailuresCount( 0 );
     	$task1->setCreatedAt( '2011-01-17 22:00:15' );
 
@@ -33,6 +34,7 @@ class TaskTest extends WebTestCase
     	$task2->setTaskId( 2 );
     	$task2->setTaskGroup( $taskGroup1 );
     	$task2->setCallable( 'invalidCallbackX' );
+    	$task1->setStatus( Task::STATUS_AWAITING );
     	$task2->setFailuresCount( 0 );
     	$task2->setCreatedAt( '2011-02-19 12:10:35' );
 
@@ -40,6 +42,7 @@ class TaskTest extends WebTestCase
     	$task3->setTaskId( 3 );
     	$task3->setTaskGroup( $taskGroup1 );
     	$task3->setCallable( 'zooom' );
+    	$task1->setStatus( Task::STATUS_AWAITING );
     	$task3->setFailuresCount( 0 );
     	$task3->setCreatedAt( '2010-12-10 02:11:34' );
     	
@@ -62,7 +65,7 @@ class TaskTest extends WebTestCase
     	
         $this->assertTrue( $task->getDuration() != null );
         $this->assertTrue( $task->getExecutedAt() != null );
-        $this->assertEquals( Task::ERROR_CODE_INVALID_CALLABACK , $task->getErrorCode() );
+        $this->assertEquals( Task::STATUS_INVALID_CALLABACK , $task->getStatus() );
         $this->assertEquals( 1, $task->getFailuresCount() );
     }
 

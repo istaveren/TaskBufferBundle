@@ -12,9 +12,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Task
 {
-	const ERROR_CODE_SUCCESS = 0;
-	const ERROR_CODE_INVALID_CALLABACK = 1;
-	const ERROR_CODE_RUNTIME_EXCEPTION = 2;
+	const STATUS_AWAITING = 0;
+	const STATUS_SUCCESS = 1;
+	const STATUS_INVALID_CALLABACK = 2;
+	const STATUS_RUNTIME_EXCEPTION = 3;
 	
     /**
      * @orm:Id
@@ -48,9 +49,9 @@ class Task
 
 	/**
 	 * 
-	 * @orm:Column(name="error_code", type="integer", nullable="false");
+	 * @orm:Column(name="status", type="integer", nullable="false");
 	 */
-	protected $errorCode;
+	protected $status;
 
     /**
      * @orm:Column(name="failures_count", type="integer")
@@ -174,14 +175,14 @@ class Task
     	return $this->executedAt;
     }    
 
-    public function getErrorCode()
+    public function getStatus()
     {
-    	return $this->errorCode;
+    	return $this->status;
     }    
 
-    public function setErrorCode( $errorCode )
+    public function setStatus( $status )
     {
-    	$this->errorCode = $errorCode;
+    	$this->status = $status;
     }
         
     public function getFailuresCount()
@@ -221,9 +222,9 @@ class Task
 		}
 		else
 		{
-			$errorCode = self::ERROR_CODE_INVALID_CALLABACK;
-			$this->setErrorCode( $errorCode );
-			$message = "{$this->prefixMessage()} Error code: {$errorCode}! ";
+			$status = self::STATUS_INVALID_CALLABACK;
+			$this->setstatus( $status );
+			$message = "{$this->prefixMessage()} status: {$status}! ";
 			$this->setFailuresCount( $this->getFailuresCount() + 1 );
 		}
 		$message .= "Duration:  {$this->getDuration()} µs.";
@@ -243,15 +244,15 @@ class Task
 		{
 			call_user_func( array( $this->object, $this->callable ) );
 			
-			$errorCode = self::ERROR_CODE_SUCCESS;
-			$this->setErrorCode( $errorCode );
-			$message = "{$this->prefixMessage()} {$this->executionResult( $errorCode )}. ";
+			$status = self::STATUS_SUCCESS;
+			$this->setStatus( $status );
+			$message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
 		}
 		else
 		{
-			$errorCode = self::ERROR_CODE_INVALID_CALLABACK;
-			$this->setErrorCode( $errorCode );
-			$message = "{$this->prefixMessage()} {$this->executionResult( $errorCode )}. ";
+			$status = self::STATUS_INVALID_CALLABACK;
+			$this->setstatus( $status );
+			$message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
 			$this->setFailuresCount( $this->getFailuresCount() + 1 );
 		}
 //TODO: Dwa taski dziedziczae po jednej klasie na wspolnej tabeli z jedna metoda call.		
@@ -274,8 +275,8 @@ class Task
     	return "Task: {$this->getTaskId()} from group: {$this->getTaskGroup()->getTaskGroupId()}.";
     }
     
-    public function executionResult( $errorCode )
+    public function executionResult( $status )
     {
-    	return "[Code: $errorCode]";
+    	return "[Code: $status]";
     }
 }

@@ -160,11 +160,11 @@ class TaskGroup
     		catch( \Exception $e )
     		{
 				$task->setFailuresCount( $task->getFailuresCount() + 1 );
-				$task->setErrorCode( Task::ERROR_CODE_RUNTIME_EXCEPTION );
+				$task->setStatus( Task::STATUS_RUNTIME_EXCEPTION );
 				$task->setExecutedAt( date_create( "now" ) );
 				$task->setDuration( microtime() - $timeStart );
-				$errorCode = Task::ERROR_CODE_RUNTIME_EXCEPTION;
-				$message = "{$task->prefixMessage()} {$task->executionResult( $errorCode )}. ";
+				$status = Task::STATUS_RUNTIME_EXCEPTION;
+				$message = "{$task->prefixMessage()} {$task->executionResult( $status )}. ";
 				$message .= "Duration:  {$task->getDuration()} µs.";
     		}
     		

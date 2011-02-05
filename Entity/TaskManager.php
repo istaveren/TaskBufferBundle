@@ -53,38 +53,43 @@ class TaskManager
 	
 	public function initializeTaskForObject( $callableWithObject )
 	{
-		if( !isset( $callableWithObject[0] ) || !isset( $callableWithObject[0] ) )
+		if( !isset( $callableWithObject[0] ) || !isset( $callableWithObject[1] ) )
 		{
 			throw new TaskBufferException( "Callable improperly set!" );
 		}
 		
 		$object = $callableWithObject[0];
 		$callable = $callableWithObject[1];
+		$task = initializeTask( $callable );
 		
-		$task = new Task();
-		$task->setCallable( $callable );
-		$task->setObject( $object );
-		$task->setFailuresCount( 0 );
-		
-		$this->groups->get( $this->currentGroupIdentifier )->addTask( $task );
-		$task->setTaskGroup( $this->groups->get( $this->currentGroupIdentifier ) );
+		$task->setObject( $object );		
+
 		return $this->groups->get( $this->currentGroupIdentifier );
 	}
 	 
 	public function initializeTaskForMethod( $callable )
 	{
+		$task = initializeTask( $callable );
+		
+		return $this->groups->get( $this->currentGroupIdentifier );
+	}
+	
+	private function initializeTask( $callable )
+	{
 		$task = new Task();
 		$task->setCallable( $callable );
 		$task->setFailuresCount( 0 );
+		$task->setStatus( Task::STATUS_AWAITING );
 		$this->groups->get( $this->currentGroupIdentifier )->addTask( $task );
 		$task->setTaskGroup( $this->groups->get( $this->currentGroupIdentifier ) );
-		return $this->groups->get( $this->currentGroupIdentifier );
+		
+	    return $task; 
 	}
 	
 	public function pull( $limit, $ignoreFailures )
 	{
 		$codeSuccess = Task::ERROR_CODE_SUCCESS;
-        $query = $this->em->createQuery( "SELECT t, tg FROM \Bundle\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) AND ( t.errorCode IS NULL OR t.errorCode != $codeSuccess ) ORDER BY tg.priority DESC, t.createdAt ASC" )
+        $query = $this->em->createQuery( "SELECT t, tg FROM \Bundle\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != $codeSuccess ) ORDER BY tg.priority DESC, t.createdAt ASC" )
     		->setMaxResults( $limit );
 		$taskGroups = $query->getResult();
 		

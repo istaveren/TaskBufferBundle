@@ -28,6 +28,7 @@ class TaskGroupTest extends WebTestCase
     	$task1->setTaskId( 1 );
     	$task1->setTaskGroup( $taskGroup1 );
     	$task1->setCallable( 'someMethod' );
+    	$task1->setStatus( Task::STATUS_AWAITING );
     	$task1->setObject( $objectX );
     	$task1->setFailuresCount( 0 );
     	$task1->setCreatedAt( '2011-01-17 22:00:15' );
@@ -74,7 +75,7 @@ class TaskGroupTest extends WebTestCase
     	$task = $tasks[0];
 //        $this->assertTrue( $task->getDuration() != null );
 //        $this->assertTrue( $task->getExecutedAt() != null );
-        $this->assertEquals( Task::ERROR_CODE_RUNTIME_EXCEPTION , $task->getErrorCode() );
+        $this->assertEquals( Task::STATUS_RUNTIME_EXCEPTION , $task->getStatus() );
 //        $this->assertEquals( 1, $task->getFailuresCount() );
     }	
     
