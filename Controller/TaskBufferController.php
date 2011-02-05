@@ -29,6 +29,9 @@ class TaskBufferController extends Controller
 ////////    	    	
     	$taskManager = $this->get( 'task_buffer.task_manager' );
     	$taskManager->queue( '\Bundle\TaskBufferBundle\Tests\Model\ObjectX::someMethodOk' );
+    	
+    	$objectX = new \Bundle\TaskBufferBundle\Tests\Model\ObjectX();
+    	$taskManager->queue( array( $objectX, 'someMethodOk2' ) );
 //
 //    	
 //    	$task = new \Bundle\TaskBufferBundle\Entity\Task();

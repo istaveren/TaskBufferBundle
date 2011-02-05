@@ -151,7 +151,7 @@ class TaskGroup
     		    $task->setOutput( $this->output );
             }
             
-			$timeStart = Tools::timeInMicroseconds( microtime() );				
+			$timeStart = Tools::timeInMicroseconds();				
 				
 			try 
 			{

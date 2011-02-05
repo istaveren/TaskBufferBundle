@@ -12,4 +12,7 @@ class ObjectX
     {
     }
     
+    public function someMethodOk2()
+    {
+    }    
 }

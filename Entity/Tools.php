@@ -3,10 +3,10 @@ namespace Bundle\TaskBufferBundle\Entity;
 
 class Tools
 {
-	public static function timeInMicroseconds( $microime ) 
+	public static function timeInMicroseconds() 
 	{
-		$timeparts = explode( " ", $microime );
-		return bcadd( ( $timeparts[0] * 1000000 ), bcmul( $timeparts[1], 1000000 ) );
+        list($usec, $sec) = explode(" ", microtime());
+        return ((float)$usec + (float)$sec);
 	}
 			
 		

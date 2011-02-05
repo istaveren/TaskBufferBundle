@@ -26,6 +26,7 @@
 			
 				<div><?php echo $task->getCreatedAt()->format('Y-m-d H:i:s'); ?></div>
 				<div><?php echo $task->getFailuresCount(); ?></div>
+				<div><?php echo $task->getDuration(); ?></div>
 			
 			<?php endforeach; ?>
 		<?php endif;?>

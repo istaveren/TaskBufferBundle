@@ -66,7 +66,7 @@ class TaskManager
 		
 		$object = $callableWithObject[0];
 		$callable = $callableWithObject[1];
-		$task = initializeTask( $callable );
+		$task = $this->initializeTask( $callable );
 		
 		$task->setObject( $object );		
 

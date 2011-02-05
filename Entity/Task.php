@@ -43,7 +43,7 @@ class Task
     protected $object;
 
     /**
-     * @orm:Column(name="duration", type="integer", nullable="true")
+     * @orm:Column(name="duration", type="bigint", nullable="true")
      */
     protected $duration;
 
@@ -202,9 +202,11 @@ class Task
         $this->output = $output;
     }
 
+    //TODO: Dwa taski dziedziczae po jednej klasie na wspolnej tabeli z jedna metoda call.
+            
     public function execute()
     {
-        $timeStart = Tools::timeInMicroseconds( microtime() );
+        $timeStart = Tools::timeInMicroseconds();
          
         $object = $this->getObject();
         $message = ( !isset( $object ) ) ?
@@ -212,16 +214,31 @@ class Task
             $this->callCallableOnObject( $timeStart );
          
         $this->setExecutedAt( date_create( "now" ) );
-        $this->setDuration( microtime() - $timeStart );
+        
+        $timeEnd = Tools::timeInMicroseconds();
+        $microseconds = (int)( ( $timeEnd - $timeStart ) * 1000000 );
+
+        $this->setDuration( $microseconds );
+        
+        $message .= "Duration:  {$this->getDuration()} µs.";
+
+        if( isset( $this->output ) )
+        {
+            $this->output->write( $message, 1 );
+        }        
+        
         return $message;
     }
 
+    
     private function callCallable( $timeStart )
     {
         if( is_callable( $this->getCallable() ) )
         {
             call_user_func( $this->getCallable() );
-            $message = "{$this->prefixMessage()} Task executed successfully.";
+            $status = self::STATUS_SUCCESS;
+            $this->setStatus( $status );
+            $message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
         }
         else
         {
@@ -230,18 +247,12 @@ class Task
             $message = "{$this->prefixMessage()} status: {$status}! ";
             $this->setFailuresCount( $this->getFailuresCount() + 1 );
         }
-        $message .= "Duration:  {$this->getDuration()} µs.";
-
-        if( isset( $this->output ) )
-        {
-            $this->output->write( 'OK' . $message, 1 );
-        }
+        
+        return $message; 
     }
 
-    private function callCallableOnObject()
+    private function callCallableOnObject( $timeStart )
     {
-        $timeStart = Tools::timeInMicroseconds( microtime() );
-         
          
         if( is_callable( array( $this->getObject(), $this->getCallable() ) ) )
         {
@@ -258,17 +269,8 @@ class Task
             $message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
             $this->setFailuresCount( $this->getFailuresCount() + 1 );
         }
-        //TODO: Dwa taski dziedziczae po jednej klasie na wspolnej tabeli z jedna metoda call.
 
-        $this->setExecutedAt( date_create( "now" ) );
-        $this->setDuration( ( Tools::timeInMicroseconds( microtime() ) - $timeStart ) );
-
-        $message .= "Duration:  {$this->getDuration()} µs.";
-
-        if( isset( $this->output ) )
-        {
-            $this->output->write( $message, 1 );
-        }
+        return $message;
     }
 
     public function prefixMessage()
@@ -278,6 +280,6 @@ class Task
 
     public function executionResult( $status )
     {
-        return "[Code: $status]";
+        return "[Status: $status]";
     }
 }
