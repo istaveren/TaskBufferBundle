@@ -141,7 +141,7 @@ class TaskGroup
 		$this->output = $output;
 	}
     
-    public function execute( $ignoreFailures = true )
+    public function execute( $em = null, $ignoreFailures = true )
     {
     	//TODO: $ignoreFailures == false brake execution on any error!
     	foreach( $this->tasks as $task )
@@ -156,6 +156,7 @@ class TaskGroup
 			try 
 			{
     			$message = $task->execute();
+    			$task->setStatus( Task::STATUS_SUCCESS );
     		}
     		catch( \Exception $e )
     		{
@@ -166,6 +167,12 @@ class TaskGroup
 				$status = Task::STATUS_RUNTIME_EXCEPTION;
 				$message = "{$task->prefixMessage()} {$task->executionResult( $status )}. ";
 				$message .= "Duration:  {$task->getDuration()} µs.";
+    		}
+
+    		if( isset( $em ) )
+    		{
+    		    $em->persist( $task );
+    		    $em->flush();
     		}
     		
     		if( isset( $this->output ) )

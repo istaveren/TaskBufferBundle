@@ -20,11 +20,15 @@ class TaskBufferController extends Controller
         	->setFirstResult( $offset )
     		->setMaxResults( $limit );
 		$taskGroups = $query->getResult();
+
+		
+//		call_user_func( '\Bundle\TaskBufferBundle\Tests\Model\ObjectX::someMethodOk' );
 		
     	//var_dump( $taskGroups );
     	
 ////////    	    	
-//    	$taskManager = $this->get( 'task_buffer.task_manager' );
+    	$taskManager = $this->get( 'task_buffer.task_manager' );
+    	$taskManager->queue( '\Bundle\TaskBufferBundle\Tests\Model\ObjectX::someMethodOk' );
 //
 //    	
 //    	$task = new \Bundle\TaskBufferBundle\Entity\Task();

@@ -31,6 +31,12 @@ class TaskManager
 	
 	public function queue( $callable, $groupIdentifier = 'standard' )
 	{
+	    $this->em->persist( $this->initialize( $callable, $groupIdentifier ) );
+        $this->em->flush();
+	}
+	
+	public function initialize( $callable, $groupIdentifier = 'standard' )
+	{
 		$this->currentGroupIdentifier = $groupIdentifier;
 		$this->setGroupByCurrentIdentifier();
 
@@ -69,7 +75,7 @@ class TaskManager
 	 
 	public function initializeTaskForMethod( $callable )
 	{
-		$task = initializeTask( $callable );
+		$task = $this->initializeTask( $callable );
 		
 		return $this->groups->get( $this->currentGroupIdentifier );
 	}
@@ -88,7 +94,7 @@ class TaskManager
 	
 	public function pull( $limit, $ignoreFailures )
 	{
-		$codeSuccess = Task::ERROR_CODE_SUCCESS;
+		$codeSuccess = Task::STATUS_SUCCESS;
         $query = $this->em->createQuery( "SELECT t, tg FROM \Bundle\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != $codeSuccess ) ORDER BY tg.priority DESC, t.createdAt ASC" )
     		->setMaxResults( $limit );
 		$taskGroups = $query->getResult();
@@ -96,7 +102,7 @@ class TaskManager
 		foreach( $taskGroups as $taskGroup )
 		{
 			$taskGroup->setOutput( $this->output );
-			$taskGroup->execute( $ignoreFailures );	
+			$taskGroup->execute( $this->em, $ignoreFailures );	
 		}
 	}
 	
