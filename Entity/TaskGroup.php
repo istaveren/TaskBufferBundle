@@ -146,11 +146,6 @@ class TaskGroup
     	//TODO: $ignoreFailures == false brake execution on any error!
     	foreach( $this->tasks as $task )
     	{
-            if( isset( $this->output ) )
-            {
-    		    $task->setOutput( $this->output );
-            }
-            
 			$timeStart = Tools::timeInMicroseconds();				
 				
 			try 

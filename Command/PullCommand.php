@@ -39,17 +39,13 @@ class PullCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-    	//TODO:          
-         $ignoreFailures = $input->getArgument( 'ignore-failures' );
-
-         $limit = $input->getArgument( 'limit' );
-         if( !isset( $limit ) )
-         {
-         	$limit = ( !isset( $limit ) ) ? 10 : $limit;
-         }
+        $ignoreFailures = $input->getArgument( 'ignore-failures' );
+        $limitFromInput = $input->getArgument( 'limit' );
+        $limit = ( !isset( $limitFromInput ) ) ? $this->container->getParameter( 'task_buffer.task_buffer.limit' ) : $limitFromInput;
          
-         $taskManager = $this->container->get( 'task_buffer.task_manager' );
-         $taskManager->setOutput( $output );
-         $taskManager->pull( $limit, $ignoreFailures );
+        $taskBuffer = $this->container->get( 'task_buffer.task_buffer' );
+        $taskBuffer->setOutput( $output );
+        $taskBuffer->setLimit( $limit );
+        $taskBuffer->pull( $ignoreFailures );
     }
 }

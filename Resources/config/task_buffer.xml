@@ -5,12 +5,22 @@
     xsi:schemaLocation="http://www.symfony-project.org/schema/dic/services http://www.symfony-project.org/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="task_buffer.task_manager.class">Bundle\TaskBufferBundle\Entity\TaskManager</parameter>
+        <parameter key="task_buffer.task_buffer.class">Bundle\TaskBufferBundle\Entity\TaskBuffer</parameter>
+        <parameter key="task_buffer.task_buffer.limit">10</parameter>
     </parameters>
 
     <services>
-        <service id="task_buffer.task_manager" class="%task_buffer.task_manager.class%" shared="true">
+        <service id="task_buffer.task_buffer" class="%task_buffer.task_buffer.class%" shared="true">
         	<argument type="service" id="doctrine.orm.entity_manager" />
+        	  <call method="setPriority">
+    			<argument>110</argument>
+  			  </call>
+        	  <call method="setLimit">
+    			<argument>10</argument>
+  			  </call>
+        	  <call method="setFailuresLimit">
+    			<argument>3</argument>
+  			  </call>  			  
 		</service>
     </services>
     

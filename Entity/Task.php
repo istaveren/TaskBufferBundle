@@ -3,7 +3,6 @@
 namespace Bundle\TaskBufferBundle\Entity;
 
 use Bundle\TaskBufferBundle\Entity\TaskGroup;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @orm:Entity
@@ -67,8 +66,6 @@ class Task
      * @orm:Column(name="executed_at", type="datetime", nullable="true")
      */
     protected $executedAt;
-
-    private $output;
 
     public function __construct(){}
 
@@ -183,82 +180,6 @@ class Task
         $this->failuresCount = $failuresCount;
     }
 
-    public function setOutput( OutputInterface $output )
-    {
-        $this->output = $output;
-    }
-
-    //TODO: Dwa taski dziedziczae po jednej klasie na wspolnej tabeli z jedna metoda call.
-            
-//    public function execute()
-//    {
-//        $timeStart = Tools::timeInMicroseconds();
-//         
-//        $object = $this->getObject();
-//        $message = ( !isset( $object ) ) ?
-//            $this->callCallable( $timeStart ) :
-//            $this->callCallableOnObject( $timeStart );
-//         
-//        $this->setExecutedAt( date_create( "now" ) );
-//        
-//        $timeEnd = Tools::timeInMicroseconds();
-//        $microseconds = (int)( ( $timeEnd - $timeStart ) * 1000000 );
-//
-//        $this->setDuration( $microseconds );
-//        
-//        $message .= "Duration:  {$this->getDuration()} µs.";
-//
-//        if( isset( $this->output ) )
-//        {
-//            $this->output->write( $message, 1 );
-//        }        
-//        
-//        return $message;
-//    }
-
-    
-//    private function callCallable( $timeStart )
-//    {
-//        if( is_callable( $this->getCallable() ) )
-//        {
-//            call_user_func( $this->getCallable() );
-//            $status = self::STATUS_SUCCESS;
-//            $this->setStatus( $status );
-//            $message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
-//        }
-//        else
-//        {
-//            $status = self::STATUS_INVALID_CALLABACK;
-//            $this->setstatus( $status );
-//            $message = "{$this->prefixMessage()} status: {$status}! ";
-//            $this->setFailuresCount( $this->getFailuresCount() + 1 );
-//        }
-//        
-//        return $message; 
-//    }
-
-//    private function callCallableOnObject( $timeStart )
-//    {
-//         
-//        if( is_callable( array( $this->getObject(), $this->getCallable() ) ) )
-//        {
-//            call_user_func( array( $this->getObject(), $this->getCallable() ) );
-//             
-//            $status = self::STATUS_SUCCESS;
-//            $this->setStatus( $status );
-//            $message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
-//        }
-//        else
-//        {
-//            $status = self::STATUS_INVALID_CALLABACK;
-//            $this->setstatus( $status );
-//            $message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
-//            $this->setFailuresCount( $this->getFailuresCount() + 1 );
-//        }
-//
-//        return $message;
-//    }
-
     public function prefixMessage()
     {
         return "Task: {$this->getTaskId()} from group: {$this->getTaskGroup()->getTaskGroupId()}.";
@@ -268,4 +189,41 @@ class Task
     {
         return "[Status: $status]";
     }
+	
+    public function preExecute()
+    {
+        
+    }
+    
+	public function postExecute( $timeStart )
+	{
+        $this->setExecutedAt( date_create( "now" ) );
+        
+        $timeEnd = Tools::timeInMicroseconds();
+        $microseconds = (int)( ( $timeEnd - $timeStart ) * 1000000 );
+
+        $this->setDuration( $microseconds );
+        
+        $message = "{$this->prefixMessage()} {$this->executionResult( $this->getStatus() )}. ";        
+        $message .= "Duration:  {$this->getDuration()} µs.";
+        
+        return $message;
+	}    
+	
+    public function call( $callable )
+    {
+        if( is_callable( $callable ) )
+        {
+            call_user_func( $callable );
+            $status = self::STATUS_SUCCESS;
+            $this->setStatus( $status );
+        }
+        else
+        {
+            $status = self::STATUS_INVALID_CALLABACK;
+            $this->setstatus( $status );
+            $this->setFailuresCount( $this->getFailuresCount() + 1 );
+        }
+    }
+	
 }

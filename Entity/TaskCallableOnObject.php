@@ -32,47 +32,9 @@ class TaskCallableOnObject extends Task
     public function execute()
     {
         $timeStart = Tools::timeInMicroseconds();
-         
-        $object = $this->getObject();
-        $message = $this->call( $timeStart ); 
         
-        $this->setExecutedAt( date_create( "now" ) );
+        $this->call( array( $this->getObject(), $this->getCallable() ) ); 
         
-        $timeEnd = Tools::timeInMicroseconds();
-        $microseconds = (int)( ( $timeEnd - $timeStart ) * 1000000 );
-
-        $this->setDuration( $microseconds );
-        
-        $message .= "Duration:  {$this->getDuration()} µs.";
-
-        if( isset( $this->output ) )
-        {
-            $this->output->write( $message, 1 );
-        }        
-        
-        return $message;
+        return $this->postExecute( $timeStart );
     }
-    
-    
-    private function call( $timeStart )
-    {
-        if( is_callable( array( $this->getObject(), $this->getCallable() ) ) )
-        {
-            call_user_func( array( $this->getObject(), $this->getCallable() ) );
-             
-            $status = self::STATUS_SUCCESS;
-            $this->setStatus( $status );
-            $message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
-        }
-        else
-        {
-            $status = self::STATUS_INVALID_CALLABACK;
-            $this->setstatus( $status );
-            $message = "{$this->prefixMessage()} {$this->executionResult( $status )}. ";
-            $this->setFailuresCount( $this->getFailuresCount() + 1 );
-        }
-
-        return $message;
-    }
-
 }

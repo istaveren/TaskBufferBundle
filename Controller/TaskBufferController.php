@@ -2,9 +2,7 @@
 namespace Bundle\TaskBufferBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Bundle\TaskBufferBundle\Entity\TaskManager;
-
-
+use Bundle\TaskBufferBundle\Entity\TaskBuffer;
 
 class TaskBufferController extends Controller
 {
@@ -12,6 +10,13 @@ class TaskBufferController extends Controller
     public function tasksAction( $offset = 0, $limit = 10 )
     {
     	$em = $this->get('doctrine.orm.entity_manager');
+
+    	$taskBuffer = $this->get( 'task_buffer.task_buffer' );
+    	$taskBuffer->queue( '\Bundle\TaskBufferBundle\Tests\Model\ObjectX::someMethodOk' );
+    	
+    	$objectX = new \Bundle\TaskBufferBundle\Tests\Model\ObjectX();
+    	$taskBuffer->queue( array( $objectX, 'someMethodOk2' ) );
+    	
     	
     	$offset = 0;
     	$limit = 10;
@@ -21,26 +26,18 @@ class TaskBufferController extends Controller
     		->setMaxResults( $limit );
 		$taskGroups = $query->getResult();
 
-		
-//		call_user_func( '\Bundle\TaskBufferBundle\Tests\Model\ObjectX::someMethodOk' );
-		
-    	//var_dump( $taskGroups );
-    	
+		var_dump( $taskGroups[0]->getTasks() );
 ////////    	    	
-    	$taskManager = $this->get( 'task_buffer.task_manager' );
-    	$taskManager->queue( '\Bundle\TaskBufferBundle\Tests\Model\ObjectX::someMethodOk' );
     	
-    	$objectX = new \Bundle\TaskBufferBundle\Tests\Model\ObjectX();
-    	$taskManager->queue( array( $objectX, 'someMethodOk2' ) );
 //
 //    	
 //    	$task = new \Bundle\TaskBufferBundle\Entity\Task();
 //    	
-//    	$em->persist( $taskManager->queue( array( $task, 'a' ), 'trzecia' ) );
-//    	$em->persist( $taskManager->queue( array( $task, 'b' ), 'trzecia' ) );
-//    	$em->persist( $taskManager->queue( array( $task, 'c' ), 'czwarta' ) );
-//    	$em->persist( $taskManager->queue( array( $task, 'd' ), 'piąta' ) );
-//    	$group = $taskManager->queue( array( $task, 'e' ) );
+//    	$em->persist( $TaskBuffer->queue( array( $task, 'a' ), 'trzecia' ) );
+//    	$em->persist( $TaskBuffer->queue( array( $task, 'b' ), 'trzecia' ) );
+//    	$em->persist( $TaskBuffer->queue( array( $task, 'c' ), 'czwarta' ) );
+//    	$em->persist( $TaskBuffer->queue( array( $task, 'd' ), 'piąta' ) );
+//    	$group = $TaskBuffer->queue( array( $task, 'e' ) );
 //    	
 //    	$em->persist( $group );
 //		$em->flush();
