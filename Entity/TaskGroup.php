@@ -54,6 +54,11 @@ class TaskGroup
      */    
     protected $failuresLimit;
     
+    /**
+     * @orm:Column(name="is_active", type="boolean")
+     */
+    protected $isActive;
+    
     private $output;
 
     public function __construct()
@@ -134,6 +139,16 @@ class TaskGroup
     public function setFailuresLimit( $failuresLimit )
     {
     	$this->failuresLimit = $failuresLimit;
+    }    
+
+    public function getIsActive()
+    {
+    	return $this->isActive;
+    }    
+
+    public function setIsActive( $isActive )
+    {
+    	$this->isActivet = $isActive;
     }    
     
     public function setOutput( OutputInterface $output )

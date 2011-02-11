@@ -2,36 +2,35 @@
 
 <?php //var_dump( $taskGroups ); 
 ?>
+<div>
+	<h4>Tasks by status</h4>
+	<div>Success: <b><?php echo $statusSuccessQuantity; ?></b>,
+	Awaiting: <b><?php echo $statusAwaitingQuantity; ?></b>,
+	Invalid callback: <b><?php echo $statusInvalidCallbackQuantity; ?></b>,
+	Runtime exception: <b><?php echo $statusRuntimeExceptionQuantity; ?></b>.</div>
+</div>
 
+<div>
+<h4>Task groups</h4>
 <?php if( count( $taskGroups ) ): ?>
 	<div>
 	<?php foreach( $taskGroups as $taskGroup ): ?>
 		<div>
-		<div><?php echo $taskGroup->getIdentifier();?></div>
-		<div><?php echo $taskGroup->getPriority();?></div>
+		<div>Identifier: <b><?php echo $taskGroup->getIdentifier();?></b></div>
+		<div>Priority: <b><?php echo $taskGroup->getPriority();?></b></div>
 		
 		<?php if( $taskGroup->getStartTime() ):?>
-			<div><?php echo $taskGroup->getStartTime(); ?></div>
+			<div>Start time: <b><?php echo $taskGroup->getStartTime(); ?></b></div>
 		<?php endif;?>
 		
 		<?php if( $taskGroup->getEndTime() ):?>
-			<div><?php echo $taskGroup->getEndTime(); ?></div>
+			<div>End time: <b><?php echo $taskGroup->getEndTime(); ?></b></div>
 		<?php endif;?>
 		
-		<div><?php echo $taskGroup->getFailuresLimit();?></div>
-		
-		<div>
-		<?php if( count( $taskGroup->getTasks() ) ): ?>
-			<?php foreach( $taskGroup->getTasks() as $task ): ?>
-			
-				<div><?php echo $task->getCreatedAt()->format('Y-m-d H:i:s'); ?></div>
-				<div><?php echo $task->getFailuresCount(); ?></div>
-				<div><?php echo $task->getDuration(); ?></div>
-			
-			<?php endforeach; ?>
-		<?php endif;?>
-		</div>
+		<div>Failures limit: <b><?php echo $taskGroup->getFailuresLimit();?></b></div>
+		<div>Is active: <b><?php echo $taskGroup->getIsActive();?></b></div>
 		</div>
 	<?php endforeach; ?>
 	</div>
 <?php endif;?>
+</div>
