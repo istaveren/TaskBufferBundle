@@ -20,15 +20,15 @@ For: https://github.com/symfony/symfony-sandbox rev: 59879d952e7a7847e9ed.
         new Bundle\TaskBufferBundle\TaskBufferBundle(),
         //...
     }
-  
+
   3. Configure the routing:
-    
+
 	// app/config/routing.yml
 	task_buffer:
 	  resource: @TaskBufferBundle/Resources/config/routing.yml
-	
+
   4. Configure the service in your config:
-	
+
 	// config/app/config.yml
 	 ## Doctrine Configuration
 	doctrine.dbal:
@@ -39,9 +39,9 @@ For: https://github.com/symfony/symfony-sandbox rev: 59879d952e7a7847e9ed.
 	    auto_generate_proxy_classes: %kernel.debug%
 	    mappings:
 	        TaskBufferBundle: ~
-		    
+
   5. Configure tests if you are interested in them:
-  		    
+
 	//app/phpunit.xml.dist
 	<testsuites>
 	    <testsuite name="Project Test Suite">
@@ -50,7 +50,7 @@ For: https://github.com/symfony/symfony-sandbox rev: 59879d952e7a7847e9ed.
 	        ...
 	    </testsuite>
 	</testsuites>
-	        
+
 How to use
 ----------
 
