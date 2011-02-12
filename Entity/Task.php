@@ -26,6 +26,10 @@ class Task
      */
     protected $taskId;
 
+    //TODO: Coupling is on base class right now. Consider moving it lower to TaskCallable and TaskCallableOnObject .  
+    //http://www.doctrine-project.org/docs/orm/2.0/en/reference/inheritance-mapping.html: 
+    //"There is a general performance consideration with Single Table Inheritance: If you use a STI entity as a many-to-one or one-to-one entity you should never use one of the classes at the upper levels of the inheritance hierachy as “targetEntity”, only those that have no subclasses. Otherwise Doctrine CANNOT create proxy instances of this entity and will ALWAYS load the entity eagerly."
+    
     /**
      * @orm:ManyToOne(targetEntity="TaskGroup", inversedBy="tasks", cascade={"persist"})
      * @orm:JoinColumn(name="task_group_id", referencedColumnName="task_group_id")

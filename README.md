@@ -14,6 +14,7 @@ For: https://github.com/symfony/symfony-sandbox rev: 59879d952e7a7847e9ed.
   2. Add this bundle to your application's kernel:
 
 		// app/AppKernel.php
+
 		public function registerBundles()
 		{
 		    //...
@@ -71,5 +72,9 @@ In the controller we have some action. In this action we queue static method and
 
         ...
     }
+
+CRON or similar system should pull tasks: 
+
+    php app/console task-buffer:pull 3
 
 TODO: more explanation!    

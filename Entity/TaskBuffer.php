@@ -141,6 +141,8 @@ class TaskBuffer
     		->setMaxResults( $this->limit );
 		$taskGroups = $query->getResult();
 		
+		//TODO: Use Doctrine 2 native support for Optimistic Locking to secure concurent calls.
+		
 		foreach( $taskGroups as $taskGroup )
 		{
 			$taskGroup->setOutput( $this->output );
