@@ -13,28 +13,28 @@ class TaskGroup
 {
     /**
      * @orm:Id
-     * @orm:Column(name="task_group_id", type="integer" )
+     * @orm:Column(name="task_group_id", type="integer")
      * @orm:GeneratedValue
      */
-	protected $taskGroupId;
+    protected $taskGroupId;
 
     /**
      * @orm:Column(name="identifier", type="string", unique="true")
      */
-	protected $identifier;
+    protected $identifier;
 
     /**
      * @orm:OneToMany(targetEntity="Task", mappedBy="taskGroup", cascade={"persist"})
      */
-    private $tasks;
+    protected $tasks;
 
     /**
-     * Tasks with higher priority take precedence over tasks with lower priority. 
-     * 
+     * Tasks with higher priority take precedence over tasks with lower priority.
+     *
      * @orm:Column(name="priority", type="integer")
-     * 
+     *
      * @validation:NotBlank()
-     * @validation:Min(0) 
+     * @validation:Min(0)
      * @validation:Max(1000)
      */
     protected $priority;
@@ -51,159 +51,145 @@ class TaskGroup
 
     /**
      * @orm:Column(name="failures_limit", type="integer")
-     */    
+     */
     protected $failuresLimit;
-    
+
     /**
      * @orm:Column(name="is_active", type="boolean")
      */
     protected $isActive;
-    
+
     private $output;
 
-    public function __construct()
+    public function __construct()  
     {
- 		$this->tasks = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
 
-    public function setTaskGroupId( $taskGroupId )
+    public function setTaskGroupId($taskGroupId)
     {
-    	$this->taskGroupId = $taskGroupId;
+        $this->taskGroupId = $taskGroupId;
     }
 
     public function getTaskGroupId()
     {
-    	return $this->taskGroupId;
+        return $this->taskGroupId;
     }
 
-    public function setIdentifier( $identifier )
+    public function setIdentifier($identifier)
     {
-    	$this->identifier = $identifier;
+        $this->identifier = $identifier;
     }
 
     public function getidentifier()
     {
-    	return $this->identifier;
-    }    
+        return $this->identifier;
+    }
 
-    public function setTasks( $tasks )
+    public function setTasks($tasks)
     {
-    	$this->tasks = $tasks;
+        $this->tasks = $tasks;
     }
 
     public function getTasks()
     {
-    	return $this->tasks;
-    }    
+        return $this->tasks;
+    }
 
-    public function setPriority( $priority )
+    public function setPriority($priority)
     {
-    	$this->priority = $priority;
+        $this->priority = $priority;
     }
 
     public function getPriority()
     {
-    	return $this->priority;
-    }    
+        return $this->priority;
+    }
 
-    public function setStartTime( $startTime )
+    public function setStartTime($startTime)
     {
-    	$this->startTime = $startTime;
+        $this->startTime = $startTime;
     }
 
     public function getStartTime()
     {
-    	return $this->startTime;
-    }    
+        return $this->startTime;
+    }
 
-    public function setEndTime( $endTime )
+    public function setEndTime($endTime)
     {
-    	$this->endTime = $endTime;
+        $this->endTime = $endTime;
     }
 
     public function getEndTime()
     {
-    	return $this->endTime;
-    }    
+        return $this->endTime;
+    }
 
-    public function addTask( Task $task )
+    public function addTask(Task $task)
     {
-    	$this->tasks->add( $task );
+        $this->tasks->add($task);
     }
 
     public function getFailuresLimit()
     {
-    	return $this->failuresLimit;
-    }    
+        return $this->failuresLimit;
+    }
 
-    public function setFailuresLimit( $failuresLimit )
+    public function setFailuresLimit($failuresLimit)
     {
-    	$this->failuresLimit = $failuresLimit;
-    }    
+        $this->failuresLimit = $failuresLimit;
+    }
 
     public function getIsActive()
     {
-    	return $this->isActive;
-    }    
+        return $this->isActive;
+    }
 
-    public function setIsActive( $isActive )
+    public function setIsActive($isActive)
     {
-    	$this->isActivet = $isActive;
-    }    
-    
-    public function setOutput( OutputInterface $output )
-	{
-		$this->output = $output;
-	}
-    
-    public function execute( $em = null, $ignoreFailures = true )
-    {
-        
-//    		    // suspend auto-commit
-//    		    $em->getConnection()->beginTransaction(); 
-//                try {
-//                    //... do some work
-//                    $em->persist( $task );
-//                    $em->flush();
-//                    $em->getConnection()->commit();
-//                } catch (Exception $e) {
-//                    $em->getConnection()->rollback();
-//                    $em->close();
-//                    throw $e;
-//                }    		    
-        
-        
-    	//TODO: $ignoreFailures == false brake execution on any error!
-    	foreach( $this->tasks as $task )
-    	{
-			$timeStart = Tools::timeInMicroseconds();				
-				
-			try 
-			{
-    			$message = $task->execute();
-    			$task->setStatus( Task::STATUS_SUCCESS );
-    		}
-    		catch( \Exception $e )
-    		{
-				$task->setFailuresCount( $task->getFailuresCount() + 1 );
-				$task->setStatus( Task::STATUS_RUNTIME_EXCEPTION );
-				$task->setExecutedAt( date_create( "now" ) );
-				$task->setDuration( microtime() - $timeStart );
-				$status = Task::STATUS_RUNTIME_EXCEPTION;
-				$message = "{$task->prefixMessage()} {$task->executionResult( $status )}. ";
-				$message .= "Duration:  {$task->getDuration()} µs.";
-    		}
+        $this->isActivet = $isActive;
+    }
 
-    		if( isset( $em ) )
-    		{
-    		    $em->persist( $task );
-    		    $em->flush();
-    		}
-    		
-    		if( isset( $this->output ) )
-			{
-				$this->output->write( $message, 1 );	
-			}
-    	}
+    public function setOutput(OutputInterface $output)
+    {
+        $this->output = $output;
+    }
+
+    public function execute($em = null, $ignoreFailures = true)
+    {
+        //TODO: $ignoreFailures == false brake execution on any error!
+        foreach ($this->tasks as $task)
+        {
+            $timeStart = Tools::timeInMicroseconds();
+
+            try
+            {
+                $message = $task->execute();
+                $task->setStatus(Task::STATUS_SUCCESS);
+            }
+            catch(\Exception $e)
+            {
+                $task->setFailuresCount($task->getFailuresCount() + 1);
+                $task->setStatus(Task::STATUS_RUNTIME_EXCEPTION);
+                $task->setExecutedAt(date_create("now"));
+                $task->setDuration(microtime() - $timeStart);
+                $status = Task::STATUS_RUNTIME_EXCEPTION;
+                $message = "{$task->prefixMessage()} {$task->executionResult($status)}. ";
+                $message .= "Duration:  {$task->getDuration()} µs.";
+            }
+
+            if (isset($em))
+            {
+                $em->persist($task);
+                $em->flush();
+            }
+
+            if (isset($this->output))
+            {
+                $this->output->write($message, 1);
+            }
+        }
+        
     }
 }

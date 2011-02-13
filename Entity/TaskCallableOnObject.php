@@ -11,7 +11,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class TaskCallableOnObject extends Task
 {
-
     /**
      * @orm:Column(name="object", type="object", nullable="true")
      *
@@ -19,7 +18,7 @@ class TaskCallableOnObject extends Task
      */
     protected $object;
     
-    public function setObject( $object )
+    public function setObject($object)
     {
         $this->object = $object;
     }
@@ -32,9 +31,8 @@ class TaskCallableOnObject extends Task
     public function execute()
     {
         $timeStart = Tools::timeInMicroseconds();
+        $this->call(array( $this->getObject(), $this->getCallable())); 
         
-        $this->call( array( $this->getObject(), $this->getCallable() ) ); 
-        
-        return $this->postExecute( $timeStart );
+        return $this->postExecute($timeStart);
     }
 }

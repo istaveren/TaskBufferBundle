@@ -1,5 +1,2 @@
 <?php
-class TaskBufferException extends Exception
-{
-	
-}
+class TaskBufferException extends Exception{}

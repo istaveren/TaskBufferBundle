@@ -73,7 +73,7 @@ class Task
 
     public function __construct(){}
 
-    public function setTaskId( $taskId )
+    public function setTaskId($taskId)
     {
         $this->taskId = $taskId;
     }
@@ -83,7 +83,7 @@ class Task
         return $this->taskId;
     }
 
-    public function setTaskGroup( TaskGroup $taskGroup )
+    public function setTaskGroup(TaskGroup $taskGroup)
     {
         $this->taskGroup = $taskGroup;
     }
@@ -93,7 +93,7 @@ class Task
         return $this->taskGroup;
     }
 
-    public function setType( $type )
+    public function setType($type)
     {
         $this->type = $type;
     }
@@ -103,7 +103,7 @@ class Task
         return $this->type;
     }
 
-    public function setGroupIdentifier( $groupIdentifier )
+    public function setGroupIdentifier($groupIdentifier)
     {
         $this->groupIdentifier = $groupIdentifier;
     }
@@ -113,7 +113,7 @@ class Task
         return $this->groupIdentifier;
     }
 
-    public function setCallable( $callable )
+    public function setCallable($callable)
     {
         $this->callable = $callable;
     }
@@ -123,7 +123,7 @@ class Task
         return $this->callable;
     }
 
-    public function setDuration( $duration )
+    public function setDuration($duration)
     {
         $this->duration = $duration;
     }
@@ -138,7 +138,7 @@ class Task
         return $this->createdAt;
     }
 
-    public function setCreatedAt( $createdAt )
+    public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
     }
@@ -148,13 +148,13 @@ class Task
      */
     public function autogenerateCreatedAt()
     {
-        if( !isset( $this->createdAt ) )
+        if ( !isset( $this->createdAt ) )
         {
             $this->createdAt = date_create( "now" );
         }
     }
 
-    public function setExecutedAt( $executedAt )
+    public function setExecutedAt($executedAt)
     {
         $this->executedAt = $executedAt;
     }
@@ -169,7 +169,7 @@ class Task
         return $this->status;
     }
 
-    public function setStatus( $status )
+    public function setStatus($status)
     {
         $this->status = $status;
     }
@@ -179,7 +179,7 @@ class Task
         return $this->failuresCount;
     }
 
-    public function setFailuresCount( $failuresCount )
+    public function setFailuresCount($failuresCount)
     {
         $this->failuresCount = $failuresCount;
     }
@@ -189,44 +189,39 @@ class Task
         return "Task: {$this->getTaskId()} from group: {$this->getTaskGroup()->getTaskGroupId()}.";
     }
 
-    public function executionResult( $status )
+    public function executionResult($status)
     {
         return "[Status: $status]";
     }
 	
-    public function preExecute()
+    public function postExecute($timeStart)
     {
-        
-    }
-    
-	public function postExecute( $timeStart )
-	{
-        $this->setExecutedAt( date_create( "now" ) );
+        $this->setExecutedAt(date_create( "now" ));
         
         $timeEnd = Tools::timeInMicroseconds();
-        $microseconds = (int)( ( $timeEnd - $timeStart ) * 1000000 );
+        $microseconds = (int)(($timeEnd-$timeStart)*1000000);
 
         $this->setDuration( $microseconds );
         
-        $message = "{$this->prefixMessage()} {$this->executionResult( $this->getStatus() )}. ";        
+        $message = "{$this->prefixMessage()} {$this->executionResult($this->getStatus())}. ";        
         $message .= "Duration:  {$this->getDuration()} µs.";
         
         return $message;
 	}    
 	
-    public function call( $callable )
+    public function call($callable)
     {
-        if( is_callable( $callable ) )
+        if (is_callable($callable ))
         {
-            call_user_func( $callable );
+            call_user_func($callable);
             $status = self::STATUS_SUCCESS;
-            $this->setStatus( $status );
+            $this->setStatus($status);
         }
         else
         {
             $status = self::STATUS_INVALID_CALLABACK;
-            $this->setstatus( $status );
-            $this->setFailuresCount( $this->getFailuresCount() + 1 );
+            $this->setstatus($status);
+            $this->setFailuresCount($this->getFailuresCount() + 1);
         }
     }
 }

@@ -11,14 +11,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class TaskCallable extends Task
 {
-
     public function execute()
     {
         $timeStart = Tools::timeInMicroseconds();
-         
-        $this->call( $this->getCallable() ); 
+        $this->call($this->getCallable()); 
                  
-        return $this->postExecute( $timeStart );
-        
+        return $this->postExecute($timeStart);
     }
 }
