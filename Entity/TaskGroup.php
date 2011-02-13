@@ -158,6 +158,21 @@ class TaskGroup
     
     public function execute( $em = null, $ignoreFailures = true )
     {
+        
+//    		    // suspend auto-commit
+//    		    $em->getConnection()->beginTransaction(); 
+//                try {
+//                    //... do some work
+//                    $em->persist( $task );
+//                    $em->flush();
+//                    $em->getConnection()->commit();
+//                } catch (Exception $e) {
+//                    $em->getConnection()->rollback();
+//                    $em->close();
+//                    throw $e;
+//                }    		    
+        
+        
     	//TODO: $ignoreFailures == false brake execution on any error!
     	foreach( $this->tasks as $task )
     	{

@@ -229,5 +229,4 @@ class Task
             $this->setFailuresCount( $this->getFailuresCount() + 1 );
         }
     }
-	
 }

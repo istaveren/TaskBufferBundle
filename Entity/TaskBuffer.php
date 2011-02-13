@@ -136,18 +136,30 @@ class TaskBuffer
 	
 	public function pull( $ignoreFailures )
 	{
-		$codeSuccess = Task::STATUS_SUCCESS;
-        $query = $this->em->createQuery( "SELECT t, tg FROM \Bundle\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY tg.priority DESC, t.createdAt ASC" )
-    		->setMaxResults( $this->limit );
-		$taskGroups = $query->getResult();
+        // suspend auto-commit
+    	$this->em->getConnection()->beginTransaction(); 
+    	try {
+	    
+    		$codeSuccess = Task::STATUS_SUCCESS;
+            $query = $this->em->createQuery( "SELECT t, tg FROM \Bundle\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY tg.priority DESC, t.createdAt ASC" )
+        		->setMaxResults( $this->limit );
+        		
+            $query->setLockMode(\Doctrine\DBAL\LockMode::PESSIMISTIC_WRITE);
+    		$taskGroups = $query->getResult();
+
+    		foreach( $taskGroups as $taskGroup )
+    		{
+    			$taskGroup->setOutput( $this->output );
+    			$taskGroup->execute( $this->em, $ignoreFailures );	
+    		}
 		
-		//TODO: Use Doctrine 2 native support for Optimistic Locking to secure concurent calls.
-		
-		foreach( $taskGroups as $taskGroup )
-		{
-			$taskGroup->setOutput( $this->output );
-			$taskGroup->execute( $this->em, $ignoreFailures );	
-		}
+            $this->em->getConnection()->commit();    		
+    	} catch (Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }    		    
+    	
 	}
 	
 	private function initializeGroup()
