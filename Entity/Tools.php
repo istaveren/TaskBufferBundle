@@ -1,5 +1,5 @@
 <?php
-namespace Bundle\TaskBufferBundle\Entity;
+namespace Smentek\TaskBufferBundle\Entity;
 
 class Tools
 {

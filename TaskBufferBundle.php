@@ -1,6 +1,6 @@
 <?php
 
-namespace Bundle\TaskBufferBundle;
+namespace Smentek\TaskBufferBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

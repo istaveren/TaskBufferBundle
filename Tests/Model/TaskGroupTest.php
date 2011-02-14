@@ -1,14 +1,14 @@
 <?php
 
-namespace Bundle\TaskBuffreBundle\Tests\Model;
+namespace Smentek\TaskBuffreBundle\Tests\Model;
 
-use Bundle\TaskBufferBundle\Entity\Tools;
+use Smentek\TaskBufferBundle\Entity\Tools;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Bundle\TaskBufferBundle\Entity\Task;
-use Bundle\TaskBufferBundle\Entity\TaskCallableOnObject;
-use Bundle\TaskBufferBundle\Tests\Model\ObjectX;
-use Bundle\TaskBufferBundle\Entity\TaskGroup;
+use Smentek\TaskBufferBundle\Entity\Task;
+use Smentek\TaskBufferBundle\Entity\TaskCallableOnObject;
+use Smentek\TaskBufferBundle\Tests\Model\ObjectX;
+use Smentek\TaskBufferBundle\Entity\TaskGroup;
 
 class TaskGroupTest extends WebTestCase
 {

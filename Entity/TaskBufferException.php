@@ -1,2 +1,4 @@
 <?php
-class TaskBufferException extends Exception{}
+namespace Smentek\TaskBufferBundle\Entity;
+
+class TaskBufferException extends \Exception{}

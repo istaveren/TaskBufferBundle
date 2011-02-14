@@ -1,7 +1,3 @@
-<?php echo 'tasks.php'; ?>
-
-<?php //var_dump( $taskGroups ); 
-?>
 <div>
 	<h4>Tasks by status</h4>
 	<div>Success: <b><?php echo $statusSuccessQuantity; ?></b>,
@@ -16,6 +12,7 @@
 	<div>
 	<?php foreach( $taskGroups as $taskGroup ): ?>
 		<div>
+	
 		<div>Identifier: <b><?php echo $taskGroup->getIdentifier();?></b></div>
 		<div>Priority: <b><?php echo $taskGroup->getPriority();?></b></div>
 		

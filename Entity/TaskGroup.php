@@ -1,6 +1,6 @@
 <?php
 
-namespace Bundle\TaskBufferBundle\Entity;
+namespace Smentek\TaskBufferBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Console\Output\OutputInterface;

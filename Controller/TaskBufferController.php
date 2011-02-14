@@ -1,9 +1,10 @@
 <?php
-namespace Bundle\TaskBufferBundle\Controller;
+
+namespace Smentek\TaskBufferBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Bundle\TaskBufferBundle\Entity\TaskBuffer;
-use Bundle\TaskBufferBundle\Entity\Task;
+use Smentek\TaskBufferBundle\Entity\TaskBuffer;
+use Smentek\TaskBufferBundle\Entity\Task;
 
 class TaskBufferController extends Controller
 {
@@ -13,9 +14,9 @@ class TaskBufferController extends Controller
     	$em = $this->get('doctrine.orm.entity_manager');
 
     	$taskBuffer = $this->get( 'task_buffer.task_buffer' );
-    	$taskBuffer->queue( '\Bundle\TaskBufferBundle\Tests\Model\ObjectX::someMethodOk' );
+    	$taskBuffer->queue( '\Smentek\TaskBufferBundle\Tests\Model\ObjectX::someMethodOk' );
     	
-    	$objectX = new \Bundle\TaskBufferBundle\Tests\Model\ObjectX();
+    	$objectX = new \Smentek\TaskBufferBundle\Tests\Model\ObjectX();
     	$taskBuffer->queue( array( $objectX, 'someMethodOk2' ) );
     	
     	$offset = 0;
@@ -23,7 +24,7 @@ class TaskBufferController extends Controller
     	
     	//TODO: count all task by statuses
     	
-        $query = $em->createQuery( "SELECT tg FROM \Bundle\TaskBufferBundle\Entity\TaskGroup tg
+        $query = $em->createQuery( "SELECT tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg
         	WHERE tg.isActive = true ORDER BY tg.priority ASC" )
         	->setFirstResult( $offset )
     		->setMaxResults( $limit );
@@ -34,16 +35,16 @@ class TaskBufferController extends Controller
         $statusInvalidCallback = Task::STATUS_INVALID_CALLABACK;
         $statusRuntimeException = Task::STATUS_RUNTIME_EXCEPTION;
 		
-		$statusSuccesQuantityQuery = $em->createQuery( "SELECT COUNT(t.taskId) as success_quantity FROM \Bundle\TaskBufferBundle\Entity\Task t WHERE t.status = {$statusSuccess}" ); 
+		$statusSuccesQuantityQuery = $em->createQuery( "SELECT COUNT(t.taskId) as success_quantity FROM \Smentek\TaskBufferBundle\Entity\Task t WHERE t.status = {$statusSuccess}" ); 
 		$statusSuccessQuantity = $statusSuccesQuantityQuery->getSingleScalarResult();
 
-		$statusAwaitingQuantityQuery = $em->createQuery( "SELECT COUNT(t.taskId) as success_quantity FROM \Bundle\TaskBufferBundle\Entity\Task t WHERE t.status = {$statusAwaiting}" ); 
+		$statusAwaitingQuantityQuery = $em->createQuery( "SELECT COUNT(t.taskId) as success_quantity FROM \Smentek\TaskBufferBundle\Entity\Task t WHERE t.status = {$statusAwaiting}" ); 
 		$statusAwaitingQuantity = $statusAwaitingQuantityQuery->getSingleScalarResult();
 
-		$statusInvalidCallbackQuantityQuery = $em->createQuery( "SELECT COUNT(t.taskId) as success_quantity FROM \Bundle\TaskBufferBundle\Entity\Task t WHERE t.status = {$statusInvalidCallback}" ); 
+		$statusInvalidCallbackQuantityQuery = $em->createQuery( "SELECT COUNT(t.taskId) as success_quantity FROM \Smentek\TaskBufferBundle\Entity\Task t WHERE t.status = {$statusInvalidCallback}" ); 
 		$statusInvalidCallbackQuantity = $statusInvalidCallbackQuantityQuery->getSingleScalarResult();
 		
-		$statusRuntimeExceptionQuantityQuery = $em->createQuery( "SELECT COUNT(t.taskId) as success_quantity FROM \Bundle\TaskBufferBundle\Entity\Task t WHERE t.status = {$statusRuntimeException}" ); 
+		$statusRuntimeExceptionQuantityQuery = $em->createQuery( "SELECT COUNT(t.taskId) as success_quantity FROM \Smentek\TaskBufferBundle\Entity\Task t WHERE t.status = {$statusRuntimeException}" ); 
 		$statusRuntimeExceptionQuantity = $statusRuntimeExceptionQuantityQuery->getSingleScalarResult();
 		
 		$viewResult = array(
@@ -53,8 +54,8 @@ class TaskBufferController extends Controller
 		    'statusRuntimeExceptionQuantity' => $statusRuntimeExceptionQuantity,
 		    'taskGroups' => $taskGroups,
 		);
-		
-		return $this->render( 'TaskBufferBundle:TaskBuffer:tasks.php.html', $viewResult );
+
+		return $this->render('TaskBufferBundle:TaskBuffer:tasks.html.php', $viewResult);
     }
     
     public function taskDeleteAction()

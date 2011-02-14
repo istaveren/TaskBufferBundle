@@ -1,5 +1,5 @@
 <?php
-namespace Bundle\TaskBufferBundle\Tests\Model;
+namespace Smentek\TaskBufferBundle\Tests\Model;
 
 class ObjectX
 {

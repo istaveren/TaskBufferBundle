@@ -1,5 +1,5 @@
 <?php
-namespace Bundle\TaskBufferBundle\Command;
+namespace Smentek\TaskBufferBundle\Command;
 
 use \Symfony\Component\Console\Input\InputArgument;
 use \Symfony\Bundle\FrameworkBundle\Command\Command;

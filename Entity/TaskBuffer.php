@@ -1,10 +1,10 @@
 <?php
 
-namespace Bundle\TaskBufferBundle\Entity;
+namespace Smentek\TaskBufferBundle\Entity;
 
-use Bundle\TaskBufferBundle\Entity\Task;
-use Bundle\TaskBufferBundle\Entity\TaskGroup;
-use Bundle\TaskBufferBundle\Entity\TaskBufferException;
+use Smentek\TaskBufferBundle\Entity\Task;
+use Smentek\TaskBufferBundle\Entity\TaskGroup;
+use Smentek\TaskBufferBundle\Entity\TaskBufferException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -112,7 +112,7 @@ class TaskBuffer
         try 
         {
             $codeSuccess = Task::STATUS_SUCCESS;
-            $query = $this->em->createQuery("SELECT t, tg FROM \Bundle\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY tg.priority DESC, t.createdAt ASC" )
+            $query = $this->em->createQuery("SELECT t, tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY tg.priority DESC, t.createdAt ASC" )
             ->setMaxResults($this->limit);
 
             $query->setLockMode(\Doctrine\DBAL\LockMode::PESSIMISTIC_WRITE);
@@ -138,7 +138,7 @@ class TaskBuffer
     {
         if (!$this->groups->containsKey($this->currentGroupIdentifier))
         {
-            $groups = $this->em->createQuery("SELECT tg FROM Bundle\TaskBufferBundle\Entity\TaskGroup tg WHERE tg.identifier = '$this->currentGroupIdentifier'")->getResult();
+            $groups = $this->em->createQuery("SELECT tg FROM Smentek\TaskBufferBundle\Entity\TaskGroup tg WHERE tg.identifier = '$this->currentGroupIdentifier'")->getResult();
             $group = (isset($groups[0]) && $groups[0] instanceof TaskGroup) ? $groups[0] : $this->initializeGroup();
             $this->groups->set($this->currentGroupIdentifier, $group);
         }

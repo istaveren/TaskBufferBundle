@@ -1,6 +1,6 @@
 <?php
 
-namespace Bundle\TaskBufferBundle\DependencyInjection;
+namespace Smentek\TaskBufferBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;

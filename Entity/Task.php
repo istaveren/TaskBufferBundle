@@ -1,8 +1,8 @@
 <?php
 
-namespace Bundle\TaskBufferBundle\Entity;
+namespace Smentek\TaskBufferBundle\Entity;
 
-use Bundle\TaskBufferBundle\Entity\TaskGroup;
+use Smentek\TaskBufferBundle\Entity\TaskGroup;
 
 /**
  * @orm:Entity
