@@ -1,0 +1,33 @@
+<div>
+	<h4>Tasks by status</h4>
+	<div>Success: <b>{{statusSuccessQuantity}}</b>,
+	Awaiting: <b>{{statusAwaitingQuantity}}</b>,
+	Invalid callback: <b>{{statusInvalidCallbackQuantity}}</b>,
+	Runtime exception: <b>{{statusRuntimeExceptionQuantity}}</b>.</div>
+</div>
+
+<div>
+<h4>Task groups</h4>
+{% if taskGroups %}
+	<div>
+	{% for taskGroup in taskGroups %}
+		<div>
+	
+		<div>Identifier: <b>{{taskGroup.getIdentifier}}</b></div>
+		<div>Priority: <b>{{taskGroup.getPriority}}</b></div>
+		
+		{% if taskGroup.getStartTime %}
+			<div>Start time: <b>{{taskGroup.getStartTime}}</b></div>
+		{% endif %}
+		
+	{% if taskGroup.getEndTime %}
+			<div>End time: <b>{{taskGroup.getEndTime}}</b></div>
+		{% endif %}
+		
+		<div>Failures limit: <b>{{taskGroup.getFailuresLimit}}</b></div>
+		<div>Is active: <b>{{taskGroup.getIsActive}}</b></div>
+		</div>
+	{% endfor %}
+	</div>
+{% endif %}
+</div>

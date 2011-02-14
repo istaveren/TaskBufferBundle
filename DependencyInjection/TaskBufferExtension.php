@@ -16,10 +16,10 @@ class TaskBufferExtension extends Extension
     }
 
     /**
-* Returns the base path for the XSD files.
-*
-* @return string The XSD base path
-*/
+	* Returns the base path for the XSD files.
+	*
+	* @return string The XSD base path
+	*/
     public function getXsdValidationBasePath()
     {
         return null;

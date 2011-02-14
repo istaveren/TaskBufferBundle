@@ -55,7 +55,7 @@ class TaskBufferController extends Controller
 		    'taskGroups' => $taskGroups,
 		);
 
-		return $this->render('TaskBufferBundle:TaskBuffer:tasks.html.php', $viewResult);
+		return $this->render('TaskBufferBundle:TaskBuffer:tasks.html.twig', $viewResult);
     }
     
     public function taskDeleteAction()

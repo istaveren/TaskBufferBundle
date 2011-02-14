@@ -5,7 +5,7 @@ Work in progress... Bundle not stable yet!
 Installation
 ============
 
-For: https://github.com/symfony/symfony-sandbox rev: 59879d952e7a7847e9ed. 
+For: https://github.com/symfony/symfony-sandbox rev: 00c0e57a93ba8407dd82. 
 
   1. Add this bundle to your src/ dir
 
