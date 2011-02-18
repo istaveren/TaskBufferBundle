@@ -148,7 +148,7 @@ class TaskGroup
 
     public function setIsActive($isActive)
     {
-        $this->isActivet = $isActive;
+        $this->isActive = $isActive;
     }
 
     public function setOutput(OutputInterface $output)

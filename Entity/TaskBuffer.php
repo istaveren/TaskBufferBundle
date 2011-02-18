@@ -23,7 +23,7 @@ class TaskBuffer
     private $priority = 100;
 
     private $failuresLimit = 3;
-
+    
     public function __construct($em)
     {
         $this->em = $em;
@@ -168,6 +168,8 @@ class TaskBuffer
         $group->setIdentifier($this->currentGroupIdentifier);
         $group->setPriority($this->getPriority());
         $group->setFailuresLimit($this->getFailuresLimit());
+        $group->setIsActive(true);
+        
         return $group;
     }
 

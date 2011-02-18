@@ -2,16 +2,18 @@
 
 namespace Smentek\TaskBufferBundle\DependencyInjection;
 
+use Symfony\Component\Config\FileLocator;
+
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class TaskBufferExtension extends Extension
 {
-
-    public function configLoad($config, ContainerBuilder $container)
+    public function load(array $config, ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, __DIR__.'/../Resources/config');
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('task_buffer.xml');
     }
 
