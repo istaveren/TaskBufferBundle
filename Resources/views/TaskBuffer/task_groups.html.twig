@@ -1,0 +1,39 @@
+{% block menu %}
+    {% include "TaskBufferBundle:TaskBuffer:menu.html.twig" %}
+{% endblock %}
+
+<div>
+	<h4>Tasks by status</h4>
+	{% block status_quantity %}
+	    {% include "TaskBufferBundle:TaskBuffer:status_quantity.html.twig" %}
+	{% endblock %}
+</div>
+
+<h4>Tasks groups [{{ taskGroups|length }}]</h4>
+{% if taskGroups %}
+<table>
+<tr>
+	<th>Identifier</th>
+	<th>Priority</th>
+	<th>Failures limit</th>
+	<th>Is active</th>
+	<th>Start time</th>
+	<th>End time</th>
+	<th>Action</th>
+</tr>
+{% for taskGroup in taskGroups %}
+<tr>
+	<td><a class="task_group" href="{{url('task_group', { 'taskGroupId': taskGroup.taskGroupId })}}">{{ taskGroup.identifier }}</a></td>
+	<td>{{taskGroup.getPriority}}</td>
+	<td>{{taskGroup.getFailuresLimit}}</td>
+	<td>{{taskGroup.getIsActive}}</td>
+	<td>{% if taskGroup.getStartTime %}{{taskGroup.getStartTime}}{% endif %}</td>
+	<td>{% if taskGroup.getEndTime %}{{taskGroup.getEndTime}}{% endif %}</td>
+	<td><a class="menu_item" href="{{url('task_group_delete', { 'taskGroupId': taskGroup.taskGroupId })}}">x</a></td>		
+</tr>
+{% endfor %}
+
+</table>
+{% else %}
+<div>There is no Task groups at the moment.</div>	
+{% endif %}

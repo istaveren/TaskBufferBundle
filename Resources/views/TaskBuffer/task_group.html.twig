@@ -1,0 +1,19 @@
+{% block menu %}
+    {% include "TaskBufferBundle:TaskBuffer:menu.html.twig" %}
+{% endblock %}
+
+<div>
+	<h4>Tasks group [{{ taskGroup.tasks|length }}]</h4>
+	{% block status_quantity %}
+	    {% include "TaskBufferBundle:TaskBuffer:status_quantity.html.twig" %}
+	{% endblock %}
+</div>
+
+{% for task in taskGroup.tasks %}
+<div>
+	<div>{{task.taskId}}</div>
+	<div>{{task.createdAt|date('Y-m-d H:i:s')}}</div>
+	<div>{{task.status}}</div>
+	<div><a class="menu_item" href="{{url('task_delete', { 'taskId': task.taskId })}}">x</a></div>
+</div>
+{% endfor %}

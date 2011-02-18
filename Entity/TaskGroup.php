@@ -24,7 +24,7 @@ class TaskGroup
     protected $identifier;
 
     /**
-     * @orm:OneToMany(targetEntity="Task", mappedBy="taskGroup", cascade={"persist"})
+     * @orm:OneToMany(targetEntity="Task", mappedBy="taskGroup", cascade={"persist","remove"})
      */
     protected $tasks;
 
