@@ -16,8 +16,9 @@ class Task
 {
     const STATUS_AWAITING = 0;
     const STATUS_SUCCESS = 1;
-    const STATUS_INVALID_CALLABACK = 2;
-    const STATUS_RUNTIME_EXCEPTION = 3;
+    const STATUS_CANCELED = 2;
+    const STATUS_INVALID_CALLABACK = 3;
+    const STATUS_RUNTIME_EXCEPTION = 4;
 
     /**
      * @orm:Id
@@ -55,9 +56,9 @@ class Task
     protected $status;
 
     /**
-     * @orm:Column(name="failures_count", type="integer")
+     * @orm:Column(name="failures_limit", type="integer")
      */
-    protected $failuresCount;
+    protected $failuresLimit;
 
     /**
      * Tasks with higher priority take precedence over tasks with lower priority.
@@ -79,11 +80,6 @@ class Task
      * @orm:Column(name="end_time", type="time", nullable="true")
      */
     protected $endTime;
-
-    /**
-     * @orm:Column(name="failures_limit", type="integer")
-     */
-    protected $failuresLimit;
 
     /**
      * @orm:Column(name="created_at", type="datetime")
@@ -239,16 +235,6 @@ class Task
     {
         $this->failuresLimit = $failuresLimit;
     }
-    
-    public function getFailuresCount()
-    {
-        return $this->failuresCount;
-    }
-
-    public function setFailuresCount($failuresCount)
-    {
-        $this->failuresCount = $failuresCount;
-    }
 
     public function prefixMessage()
     {
@@ -287,7 +273,7 @@ class Task
         {
             $status = self::STATUS_INVALID_CALLABACK;
             $this->setstatus($status);
-            $this->setFailuresCount($this->getFailuresCount() + 1);
+            $this->setFailuresLimit($this->getFailuresLimit() + 1);
         }
     }
 }

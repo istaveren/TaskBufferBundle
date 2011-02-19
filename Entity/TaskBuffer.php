@@ -95,8 +95,8 @@ class TaskBuffer
 
     public function failuresLimit($failuresLimit)
     {
-        $taskGroup = $this->getCurrentGroup();
-        $taskGroup->setFailuresLimit($failuresLimit);
+        $this->failuresLimit = $failuresLimit;
+        
         return $this;
     }
     
@@ -104,6 +104,7 @@ class TaskBuffer
     {
         $taskGroup = $this->getCurrentGroup();
         $taskGroup->setIsActive(true);
+        
         return $this;        
     }
 
@@ -111,6 +112,7 @@ class TaskBuffer
     {
         $taskGroup = $this->getCurrentGroup();
         $taskGroup->setIsActive(false);
+        
         return $this;        
     }
         
@@ -201,7 +203,7 @@ class TaskBuffer
 
     private function initializeTask($task)
     {
-        $task->setFailuresCount(0);
+        $task->setFailuresLimit($this->failuresLimit);
         $task->setStatus(Task::STATUS_AWAITING);
         
         $task->setPriority($this->getPriority());
