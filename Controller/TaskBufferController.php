@@ -13,17 +13,6 @@ class TaskBufferController extends Controller
     {
         $em = $this->get('doctrine.orm.entity_manager');
 
-        $taskBuffer = $this->get( 'task_buffer.task_buffer' );
-        $taskBuffer->queue( '\Smentek\TaskBufferBundle\Tests\Model\ObjectX::someMethodOk', 'group_11' );
-         
-        $objectX = new \Smentek\TaskBufferBundle\Tests\Model\ObjectX();
-        $taskBuffer->queue( array( $objectX, 'someMethodOk2' ), 'group_13' );
-         
-        $offset = 0;
-        $limit = 10;
-         
-        //TODO: count all task by statuses
-         
         $queryGroupsOnPage = $em->createQuery( "SELECT tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg WHERE tg.isActive = true ORDER BY tg.priority ASC" );
         //        	->setFirstResult( $offset )
         //    		->setMaxResults( $limit );
