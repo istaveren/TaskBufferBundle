@@ -23,6 +23,10 @@ class TaskBuffer
     private $priority = 100;
 
     private $failuresLimit = 3;
+    
+    private $startTime;
+    
+    private $endTime;
 
     public function __construct($em)
     {
@@ -72,8 +76,7 @@ class TaskBuffer
 
     public function priority($priority)
     {
-        $taskGroup = $this->getCurrentGroup();
-        $taskGroup->setPriority( $priority );
+        $this->priority = $priority;
         return $this;
     }
 
@@ -83,10 +86,10 @@ class TaskBuffer
         {
             return $this;
         }
-
-        $taskGroup = $this->getCurrentGroup();
-        $taskGroup->setStartTime($startTime);
-        $taskGroup->setEndTime($endTime);
+        
+        $this->startTime = $startTime;
+        $this->endTime = $endTime;
+        
         return $this;
     }
 
@@ -193,7 +196,7 @@ class TaskBuffer
         if (!$this->groups->containsKey($this->currentGroupIdentifier))
         {
             $groups = $this->em->createQuery("SELECT tg FROM Smentek\TaskBufferBundle\Entity\TaskGroup tg WHERE tg.identifier = '$this->currentGroupIdentifier'")->getResult();
-            $group = (isset($groups[0]) && $groups[0] instanceof TaskGroup) ? $groups[0] : $this->initializeGroup();
+            $group = (isset($groups[0]) && $groups[0] instanceof TaskGroup) ? $this->actualizeGroup( $groups[0] ) : $this->initializeGroup();
             $this->groups->set($this->currentGroupIdentifier, $group);
         }
     }
@@ -215,6 +218,16 @@ class TaskBuffer
             throw new TaskBufferException("There is no callable!");
         }
     }
+    
+    private function actualizeGroup( $group )
+    {
+        $group->setPriority($this->getPriority());
+        $group->setFailuresLimit($this->getFailuresLimit());
+        $group->setIsActive(true);
+        $group->setStartTime($this->startTime);
+        $group->setEndTime($this->endTime);
+        return $group;
+    }
 
     private function initializeGroup()
     {
@@ -223,6 +236,8 @@ class TaskBuffer
         $group->setPriority($this->getPriority());
         $group->setFailuresLimit($this->getFailuresLimit());
         $group->setIsActive(true);
+        $group->setStartTime($this->startTime);
+        $group->setEndTime($this->endTime);
 
         return $group;
     }

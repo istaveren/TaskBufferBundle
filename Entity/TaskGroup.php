@@ -40,12 +40,12 @@ class TaskGroup
     protected $priority;
 
     /**
-     * @orm:Column(name="start_time", type="datetime", nullable="true")
+     * @orm:Column(name="start_time", type="time", nullable="true")
      */
     protected $startTime;
 
     /**
-     * @orm:Column(name="end_time", type="datetime", nullable="true")
+     * @orm:Column(name="end_time", type="time", nullable="true")
      */
     protected $endTime;
 
