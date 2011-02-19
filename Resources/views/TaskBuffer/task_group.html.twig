@@ -14,6 +14,10 @@
 	<div>{{task.taskId}}</div>
 	<div>{{task.createdAt|date('Y-m-d H:i:s')}}</div>
 	<div>{{task.status}}</div>
+	<td>{{task.getPriority}}</td>
+	<td>{{task.getFailuresLimit}}</td>
+	<td>{% if task.getStartTime %}{{task.getStartTime|date('H:i:s')}}{% endif %}</td>
+	<td>{% if task.getEndTime %}{{task.getEndTime|date('H:i:s')}}{% endif %}</td>
 	<div><a class="menu_item" href="{{url('task_delete', { 'taskId': task.taskId })}}">x</a></div>
 </div>
 {% endfor %}

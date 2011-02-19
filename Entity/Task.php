@@ -60,6 +60,32 @@ class Task
     protected $failuresCount;
 
     /**
+     * Tasks with higher priority take precedence over tasks with lower priority.
+     *
+     * @orm:Column(name="priority", type="integer")
+     *
+     * @validation:NotBlank()
+     * @validation:Min(0)
+     * @validation:Max(1000)
+     */
+    protected $priority;
+
+    /**
+     * @orm:Column(name="start_time", type="time", nullable="true")
+     */
+    protected $startTime;
+
+    /**
+     * @orm:Column(name="end_time", type="time", nullable="true")
+     */
+    protected $endTime;
+
+    /**
+     * @orm:Column(name="failures_limit", type="integer")
+     */
+    protected $failuresLimit;
+
+    /**
      * @orm:Column(name="created_at", type="datetime")
      *
      * @validation:NotBlank()
@@ -174,6 +200,46 @@ class Task
         $this->status = $status;
     }
 
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+    }
+
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    public function setStartTime($startTime)
+    {
+        $this->startTime = $startTime;
+    }
+
+    public function getStartTime()
+    {
+        return $this->startTime;
+    }
+
+    public function setEndTime($endTime)
+    {
+        $this->endTime = $endTime;
+    }
+
+    public function getEndTime()
+    {
+        return $this->endTime;
+    }
+    
+    public function getFailuresLimit()
+    {
+        return $this->failuresLimit;
+    }
+
+    public function setFailuresLimit($failuresLimit)
+    {
+        $this->failuresLimit = $failuresLimit;
+    }
+    
     public function getFailuresCount()
     {
         return $this->failuresCount;

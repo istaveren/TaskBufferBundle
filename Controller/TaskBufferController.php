@@ -13,12 +13,12 @@ class TaskBufferController extends Controller
     {
         $em = $this->get('doctrine.orm.entity_manager');
 
-        $queryGroupsOnPage = $em->createQuery( "SELECT tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg WHERE tg.isActive = true ORDER BY tg.priority ASC" );
+        $queryGroupsOnPage = $em->createQuery( "SELECT tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg WHERE tg.isActive = true" );
         //        	->setFirstResult( $offset )
         //    		->setMaxResults( $limit );
         $taskGroups = $queryGroupsOnPage->getResult();
 
-        $queryAllGroupsQuantity = $em->createQuery( "SELECT COUNT( tg ) FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg WHERE tg.isActive = true ORDER BY tg.priority ASC" );
+        $queryAllGroupsQuantity = $em->createQuery( "SELECT COUNT( tg ) FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg WHERE tg.isActive = true" );
         $quantityOfTaskGroups = $queryAllGroupsQuantity->getSingleScalarResult();
 
         $statusSuccess = Task::STATUS_SUCCESS;

@@ -124,8 +124,6 @@ class TaskBuffer
     {
         $this->initialize($callable, $groupIdentifier);
         $this->flush();
-//        $this->em->persist($this->initialize($callable, $groupIdentifier));
-//        $this->em->flush();
     }
 
     public function initialize($callable, $groupIdentifier = 'standard')
@@ -169,7 +167,7 @@ class TaskBuffer
         try
         {
             $codeSuccess = Task::STATUS_SUCCESS;
-            $query = $this->em->createQuery("SELECT t, tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY tg.priority DESC, t.createdAt ASC" )
+            $query = $this->em->createQuery("SELECT t, tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE t.failuresLimit > t.failuresCount AND ( ( t.startTime < CURRENT_TIME() OR t.startTime is NULL ) AND ( t.endTime > CURRENT_TIME() OR t.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY t.priority DESC, t.createdAt ASC" )
             ->setMaxResults($this->limit);
 
             $query->setLockMode(\Doctrine\DBAL\LockMode::PESSIMISTIC_WRITE);
@@ -205,6 +203,13 @@ class TaskBuffer
     {
         $task->setFailuresCount(0);
         $task->setStatus(Task::STATUS_AWAITING);
+        
+        $task->setPriority($this->getPriority());
+        $task->setFailuresLimit($this->getFailuresLimit());
+        $task->setStartTime($this->startTime);
+        $task->setEndTime($this->endTime);
+        
+        
         $this->groups->get($this->currentGroupIdentifier)->addTask($task);
         $task->setTaskGroup($this->groups->get($this->currentGroupIdentifier));
 
@@ -221,11 +226,8 @@ class TaskBuffer
     
     private function actualizeGroup( $group )
     {
-        $group->setPriority($this->getPriority());
-        $group->setFailuresLimit($this->getFailuresLimit());
         $group->setIsActive(true);
-        $group->setStartTime($this->startTime);
-        $group->setEndTime($this->endTime);
+        
         return $group;
     }
 
@@ -233,11 +235,7 @@ class TaskBuffer
     {
         $group = new TaskGroup();
         $group->setIdentifier($this->currentGroupIdentifier);
-        $group->setPriority($this->getPriority());
-        $group->setFailuresLimit($this->getFailuresLimit());
         $group->setIsActive(true);
-        $group->setStartTime($this->startTime);
-        $group->setEndTime($this->endTime);
 
         return $group;
     }

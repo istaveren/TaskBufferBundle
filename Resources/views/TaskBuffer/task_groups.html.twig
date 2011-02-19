@@ -14,22 +14,14 @@
 <table>
 <tr>
 	<th>Identifier</th>
-	<th>Priority</th>
-	<th>Failures limit</th>
 	<th>Is active</th>
-	<th>Start time</th>
-	<th>End time</th>
 	<th>Action</th>
 </tr>
 {% for taskGroup in taskGroups %}
 <tr>
 	<td><a class="task_group" href="{{url('task_group', { 'taskGroupId': taskGroup.taskGroupId })}}">{{ taskGroup.identifier }}</a></td>
-	<td>{{taskGroup.getPriority}}</td>
-	<td>{{taskGroup.getFailuresLimit}}</td>
-	<td>{{taskGroup.getIsActive}}</td>
-	<td>{% if taskGroup.getStartTime %}{{taskGroup.getStartTime|date('H:i:s')}}{% endif %}</td>
-	<td>{% if taskGroup.getEndTime %}{{taskGroup.getEndTime|date('H:i:s')}}{% endif %}</td>
-	<td><a class="menu_item" href="{{url('task_group_delete', { 'taskGroupId': taskGroup.taskGroupId })}}">x</a></td>		
+	<td>{{taskGroup.getIsActive}}</td>	
+	<td><a class="menu_item" href="{{url('task_group_delete', { 'taskGroupId': taskGroup.taskGroupId })}}">x</a></td>
 </tr>
 {% endfor %}
 
