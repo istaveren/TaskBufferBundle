@@ -23,7 +23,7 @@ class TaskBuffer
     private $priority = 100;
 
     private $failuresLimit = 3;
-    
+
     public function __construct($em)
     {
         $this->em = $em;
@@ -65,10 +65,64 @@ class TaskBuffer
         return $this->failuresLimit;
     }
 
+    private function getCurrentGroup()
+    {
+        return $this->groups->get($this->currentGroupIdentifier);
+    }
+
+    public function priority($priority)
+    {
+        $taskGroup = $this->getCurrentGroup();
+        $taskGroup->setPriority( $priority );
+        return $this;
+    }
+
+    public function time($startTime, $endTime = null)
+    {
+        if (!$startTime instanceof \DateTime and !$endTime instanceof \DateTime)
+        {
+            return $this;
+        }
+
+        $taskGroup = $this->getCurrentGroup();
+        $taskGroup->setStartTime($startTime);
+        $taskGroup->setEndTime($endTime);
+        return $this;
+    }
+
+    public function failuresLimit($failuresLimit)
+    {
+        $taskGroup = $this->getCurrentGroup();
+        $taskGroup->setFailuresLimit($failuresLimit);
+        return $this;
+    }
+    
+    public function activate()
+    {
+        $taskGroup = $this->getCurrentGroup();
+        $taskGroup->setIsActive(true);
+        return $this;        
+    }
+
+    public function deactivate()
+    {
+        $taskGroup = $this->getCurrentGroup();
+        $taskGroup->setIsActive(false);
+        return $this;        
+    }
+        
+    public function flush()
+    {
+        $this->em->persist($this->getCurrentGroup());
+        $this->em->flush();
+    }
+
     public function queue($callable, $groupIdentifier = 'standard')
     {
-        $this->em->persist($this->initialize($callable, $groupIdentifier));
-        $this->em->flush();
+        $this->initialize($callable, $groupIdentifier);
+        $this->flush();
+//        $this->em->persist($this->initialize($callable, $groupIdentifier));
+//        $this->em->flush();
     }
 
     public function initialize($callable, $groupIdentifier = 'standard')
@@ -102,14 +156,14 @@ class TaskBuffer
         $task = new TaskCallable();
         $task = $this->initializeTask($task);
         $task->setCallable($callable);
-        
+
         return $this->groups->get($this->currentGroupIdentifier);
     }
 
     public function pull($ignoreFailures)
     {
         $this->em->getConnection()->beginTransaction();
-        try 
+        try
         {
             $codeSuccess = Task::STATUS_SUCCESS;
             $query = $this->em->createQuery("SELECT t, tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE tg.failuresLimit > t.failuresCount AND ( ( tg.startTime < CURRENT_TIME() OR tg.startTime is NULL ) AND ( tg.endTime > CURRENT_TIME() OR tg.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY tg.priority DESC, t.createdAt ASC" )
@@ -124,9 +178,9 @@ class TaskBuffer
                 $taskGroup->execute($this->em, $ignoreFailures);
                 $this->em->getConnection()->commit();
             }
-            
-        } 
-        catch (Exception $e) 
+
+        }
+        catch (Exception $e)
         {
             $this->em->getConnection()->rollback();
             $this->em->close();
@@ -143,7 +197,7 @@ class TaskBuffer
             $this->groups->set($this->currentGroupIdentifier, $group);
         }
     }
-    
+
     private function initializeTask($task)
     {
         $task->setFailuresCount(0);
@@ -169,7 +223,7 @@ class TaskBuffer
         $group->setPriority($this->getPriority());
         $group->setFailuresLimit($this->getFailuresLimit());
         $group->setIsActive(true);
-        
+
         return $group;
     }
 
