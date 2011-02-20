@@ -169,7 +169,7 @@ class TaskBuffer
         try
         {
             $codeSuccess = Task::STATUS_SUCCESS;
-            $query = $this->em->createQuery("SELECT t, tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE t.failuresLimit > t.failuresCount AND ( ( t.startTime < CURRENT_TIME() OR t.startTime is NULL ) AND ( t.endTime > CURRENT_TIME() OR t.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY t.priority DESC, t.createdAt ASC" )
+            $query = $this->em->createQuery("SELECT t, tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE t.failuresLimit > t.failuresLimit AND ( ( t.startTime < CURRENT_TIME() OR t.startTime is NULL ) AND ( t.endTime > CURRENT_TIME() OR t.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY t.priority DESC, t.createdAt ASC" )
             ->setMaxResults($this->limit);
 
             $query->setLockMode(\Doctrine\DBAL\LockMode::PESSIMISTIC_WRITE);
