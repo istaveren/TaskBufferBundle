@@ -32,7 +32,7 @@ class TaskCallableOnObject extends Task
     {
         $timeStart = Tools::timeInMicroseconds();
         $this->call(array( $this->getObject(), $this->getCallable())); 
-        
+sleep(3);        
         return $this->postExecute($timeStart);
     }
 }

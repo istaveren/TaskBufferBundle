@@ -61,6 +61,11 @@ class Task
     protected $failuresLimit;
 
     /**
+     * @orm:Column(name="failures", type="integer")
+     */
+    protected $failures;
+    
+    /**
      * Tasks with higher priority take precedence over tasks with lower priority.
      *
      * @orm:Column(name="priority", type="integer")
@@ -236,6 +241,16 @@ class Task
         $this->failuresLimit = $failuresLimit;
     }
 
+    public function getFailures()
+    {
+        return $this->failures;
+    }
+
+    public function setFailures($failures)
+    {
+        $this->failures = $failures;
+    }
+    
     public function prefixMessage()
     {
         return "Task: {$this->getTaskId()} from group: {$this->getTaskGroup()->getTaskGroupId()}.";
@@ -273,7 +288,7 @@ class Task
         {
             $status = self::STATUS_INVALID_CALLABACK;
             $this->setstatus($status);
-            $this->setFailuresLimit($this->getFailuresLimit() + 1);
+            $this->setFailures($this->getFailures() + 1);
         }
     }
 }

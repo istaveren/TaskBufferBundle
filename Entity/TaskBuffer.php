@@ -169,7 +169,7 @@ class TaskBuffer
         try
         {
             $codeSuccess = Task::STATUS_SUCCESS;
-            $query = $this->em->createQuery("SELECT t, tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE t.failuresLimit > t.failuresLimit AND ( ( t.startTime < CURRENT_TIME() OR t.startTime is NULL ) AND ( t.endTime > CURRENT_TIME() OR t.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY t.priority DESC, t.createdAt ASC" )
+            $query = $this->em->createQuery("SELECT t, tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE t.failuresLimit > t.failures AND ( ( t.startTime < CURRENT_TIME() OR t.startTime is NULL ) AND ( t.endTime > CURRENT_TIME() OR t.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY t.priority DESC, t.createdAt ASC" )
             ->setMaxResults($this->limit);
 
             $query->setLockMode(\Doctrine\DBAL\LockMode::PESSIMISTIC_WRITE);
@@ -179,9 +179,8 @@ class TaskBuffer
             {
                 $taskGroup->setOutput($this->output);
                 $taskGroup->execute($this->em, $ignoreFailures);
-                $this->em->getConnection()->commit();
             }
-
+            $this->em->getConnection()->commit();
         }
         catch (Exception $e)
         {
@@ -208,6 +207,7 @@ class TaskBuffer
         
         $task->setPriority($this->getPriority());
         $task->setFailuresLimit($this->getFailuresLimit());
+        $task->setFailures(0);
         $task->setStartTime($this->startTime);
         $task->setEndTime($this->endTime);
         
