@@ -62,13 +62,13 @@ How to use
 
 In the controller we have some action. In this action we queue static method and normal method call.
 
-	queue( callable [, group_identifier] ) - Store task in a buffer.
+queue( callable [, group_identifier] ) - Store task in a buffer.
 	
-	failuresLimit( int limit ) - Limit of tries for task execution.
+failuresLimit( int limit ) - Limit of tries for task execution.
 	
-    priority( int priority ) - Tasks with lower number goes first.
+priority( int priority ) - Tasks with lower number goes first.
      
-    time( DateTime $timeFrom, DateTime $timeUntil ) - Task execution occur only between specified hours.
+time( DateTime $timeFrom, DateTime $timeUntil ) - Task execution occur only between specified hours.
 
     public function someAction()
     {
@@ -85,9 +85,11 @@ In the controller we have some action. In this action we queue static method and
         $taskBuffer->queue( array( $someObject, 'someMethod' ) );
 
  		// Queue invocation of $objectX->hello22().
- 		// Invocation will be executed in 2 hours window. For example, if queue is executed at 11.31 the window is from 10.31 to 12.31 every day till successfull execution of the task,
+ 		// Invocation will be executed in 2 hours window. For example, if queue is executed at 11.31 
+ 		// the window is from 10.31 to 12.31 every day till successfull execution of the task,
  		// or untill failuresLimit is reached what gives 5 tries. 
-		// Task will not be executed if there are any tasks with higher priority awaiting, 'higher' means number lower than 50 (0 goes first, 1000 last).  
+		// Task will not be executed if there are any tasks with higher priority awaiting, 
+		// 'higher' means number lower than 50 (0 goes first, 1000 last).  
  		
  		$timeFrom = new \DateTime(date('H:i:s'));
         $timeUntil = new \DateTime(date('H:i:s'));
@@ -101,7 +103,7 @@ In the controller we have some action. In this action we queue static method and
         ...
     }
 
-CRON or similar system should pull tasks: 
+Pulling tasks fron terminal:
 
     php app/console task-buffer:pull 10
     
