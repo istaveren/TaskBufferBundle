@@ -82,7 +82,13 @@ class TaskBuffer
         return $this;
     }
 
-    public function time($startTime, $endTime = null)
+    /**
+     * Sets window for task execution.
+     *  
+     * @param \DateTime $startTime
+     * @param \DateTime $endTime
+     */
+    public function time( \DateTime $startTime, \DateTime $endTime = null)
     {
         if (!$startTime instanceof \DateTime and !$endTime instanceof \DateTime)
         {
