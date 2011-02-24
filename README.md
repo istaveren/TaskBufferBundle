@@ -57,10 +57,9 @@ For: https://github.com/symfony/symfony-sandbox rev: 00c0e57a93ba8407dd82.
              </testsuite>
          </testsuites>
 
-How to use
-----------
 
-In the controller we have some action. In this action we queue static method and normal method call.
+API
+----------
 
 queue( callable [, group_identifier] ) - Store task in a buffer.
 	
@@ -69,6 +68,11 @@ failuresLimit( int limit ) - Limit of tries for task execution.
 priority( int priority ) - Tasks with lower number goes first.
      
 time( DateTime $timeFrom, DateTime $timeUntil ) - Task execution occur only between specified hours.
+
+
+Use examples
+----------
+
 
     public function someAction()
     {
@@ -103,10 +107,10 @@ time( DateTime $timeFrom, DateTime $timeUntil ) - Task execution occur only betw
         ...
     }
 
-Pulling tasks fron terminal:
+Pulling tasks from terminal:
 
     php app/console task-buffer:pull 10
     
-Where '10' is number of tasks, an may be ommited.    
+'10' is default quantity of tasks, an may be ommited.    
 
 TODO: more explanation!    
