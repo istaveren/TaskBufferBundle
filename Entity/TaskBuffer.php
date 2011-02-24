@@ -10,6 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TaskBuffer
 {
+    const DEFAULT_TASK_GROUP_IDENTIFIER = 'standard';
+    
     private $em;
 
     private $groups;
@@ -100,35 +102,19 @@ class TaskBuffer
         return $this;
     }
     
-    public function activate()
-    {
-        $taskGroup = $this->getCurrentGroup();
-        $taskGroup->setIsActive(true);
-        
-        return $this;        
-    }
-
-    public function deactivate()
-    {
-        $taskGroup = $this->getCurrentGroup();
-        $taskGroup->setIsActive(false);
-        
-        return $this;        
-    }
-        
     public function flush()
     {
         $this->em->persist($this->getCurrentGroup());
         $this->em->flush();
     }
 
-    public function queue($callable, $groupIdentifier = 'standard')
+    public function queue($callable, $groupIdentifier = self::DEFAULT_TASK_GROUP_IDENTIFIER)
     {
         $this->initialize($callable, $groupIdentifier);
         $this->flush();
     }
 
-    public function initialize($callable, $groupIdentifier = 'standard')
+    public function initialize($callable, $groupIdentifier = self::DEFAULT_TASK_GROUP_IDENTIFIER)
     {
         $this->currentGroupIdentifier = $groupIdentifier;
         $this->setGroupByCurrentIdentifier();
