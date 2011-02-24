@@ -19,17 +19,16 @@ For: https://github.com/symfony/symfony-sandbox rev: 00c0e57a93ba8407dd82.
              // your other namespaces
          ));
 
-
   3. Add this bundle to your application's kernel (app/AppKernel.php):
 
-        public function registerBundles()
-        {
-    	    return array(
-            	//...
-            	new Smentek\TaskBufferBundle\TaskBufferBundle(),
-            	//...
-            );
-        }
+         public function registerBundles()
+         {
+             return array(
+                 //...
+                 new Smentek\TaskBufferBundle\TaskBufferBundle(),
+                 //...
+             );
+         }
 
   3. Configure the routing (app/config/routing.yml):
         
