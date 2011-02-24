@@ -9,7 +9,7 @@ For: https://github.com/symfony/symfony-sandbox rev: 00c0e57a93ba8407dd82.
 
   1. Add this bundle to your src/ dir
 
-        $ git submodule add git://github.com/smentek/TaskBufferBundle.git src/Smentek/TaskBufferBundle
+         $ git submodule add git://github.com/smentek/TaskBufferBundle.git src/Smentek/TaskBufferBundle
 
   2. Add the Smentek namespace to your autoloader:
 
@@ -32,30 +32,30 @@ For: https://github.com/symfony/symfony-sandbox rev: 00c0e57a93ba8407dd82.
 
   3. Configure the routing (app/config/routing.yml):
         
-        task_buffer:
-            resource: @TaskBufferBundle/Resources/config/routing.yml
+         task_buffer:
+             resource: @TaskBufferBundle/Resources/config/routing.yml
 
   4. Configure the service in your config (config/app/config.yml):
 
-        ## Doctrine Configuration
-        doctrine.dbal:
-            dbname:   symfony-sandbox
-            user:     dbuser
-            password: dbpass
-        doctrine.orm:
-            auto_generate_proxy_classes: %kernel.debug%
-            mappings:
-              TaskBufferBundle: ~
+         ## Doctrine Configuration
+         doctrine.dbal:
+             dbname:   symfony-sandbox
+             user:     dbuser
+             password: dbpass
+         doctrine.orm:
+             auto_generate_proxy_classes: %kernel.debug%
+             mappings:
+                 TaskBufferBundle: ~
 
   5. Configure tests if you are interested in them (app/phpunit.xml.dist):
 
-        <testsuites>
-            <testsuite name="Project Test Suite">
-                ...
-                <directory>../src/Bundle/*/Tests</directory>
+         <testsuites>
+             <testsuite name="Project Test Suite">
                  ...
-            </testsuite>
-        </testsuites>
+                 <directory>../src/Bundle/*/Tests</directory>
+                  ...
+             </testsuite>
+         </testsuites>
 
 How to use
 ----------
