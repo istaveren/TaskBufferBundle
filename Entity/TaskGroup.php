@@ -70,7 +70,6 @@ class TaskGroup
         return $this->tasks;
     }
 
-
     public function addTask(Task $task)
     {
         $this->tasks->add($task);

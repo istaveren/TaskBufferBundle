@@ -170,6 +170,19 @@ class Task
         $this->createdAt = $createdAt;
     }
 
+    public function statusAsString( $status )
+    {
+        $statusStringRepresentations = array(
+            self::STATUS_AWAITING => 'AWAITING',
+            self::STATUS_SUCCESS => 'SUCCESS',
+            self::STATUS_CANCELED => 'CANCELED',
+            self::STATUS_INVALID_CALLABACK => 'INVALID_CALLABACK',
+            self::STATUS_RUNTIME_EXCEPTION => 'RUNTIME_EXCEPTION',
+        );
+        
+        return ( isset( $statusStringRepresentations[$status] ) ) ? $statusStringRepresentations[$status] : '';
+    }
+    
     /**
      * @orm:PrePersist
      */
@@ -253,12 +266,13 @@ class Task
     
     public function prefixMessage()
     {
-        return "Task: {$this->getTaskId()} from group: {$this->getTaskGroup()->getTaskGroupId()}.";
+        return "Task: {$this->getTaskId()} from group: {$this->getTaskGroup()->getIdentifier()}";
     }
 
     public function executionResult($status)
     {
-        return "[Status: $status]";
+        $statusAsString = $this->statusAsString($status);
+        return "Status: {$statusAsString}";
     }
 	
     public function postExecute($timeStart)
