@@ -11,31 +11,42 @@ For: https://github.com/symfony/symfony-sandbox rev: 00c0e57a93ba8407dd82.
 
         $ git submodule add git://github.com/smentek/TaskBufferBundle.git src/Smentek/TaskBufferBundle
 
-  2. Add this bundle to your application's kernel (app/AppKernel.php):
+  2. Add the Smentek namespace to your autoloader:
+
+         // app/autoload.php
+         $loader->registerNamespaces(array(
+             'Smentek' => __DIR__.'/../src',
+             // your other namespaces
+         ));
+
+
+  3. Add this bundle to your application's kernel (app/AppKernel.php):
 
         public function registerBundles()
         {
-            //...
-            new Smentek\TaskBufferBundle\TaskBufferBundle(),
-            //...
+    	    return array(
+            	//...
+            	new Smentek\TaskBufferBundle\TaskBufferBundle(),
+            	//...
+            );
         }
 
   3. Configure the routing (app/config/routing.yml):
         
         task_buffer:
-          resource: @TaskBufferBundle/Resources/config/routing.yml
+            resource: @TaskBufferBundle/Resources/config/routing.yml
 
   4. Configure the service in your config (config/app/config.yml):
 
         ## Doctrine Configuration
         doctrine.dbal:
-          dbname:   symfony-sandbox
-          user:     dbuser
-          password: dbpass
+            dbname:   symfony-sandbox
+            user:     dbuser
+            password: dbpass
         doctrine.orm:
-          auto_generate_proxy_classes: %kernel.debug%
-          mappings:
-            TaskBufferBundle: ~
+            auto_generate_proxy_classes: %kernel.debug%
+            mappings:
+              TaskBufferBundle: ~
 
   5. Configure tests if you are interested in them (app/phpunit.xml.dist):
 
