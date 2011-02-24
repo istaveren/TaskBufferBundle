@@ -15,7 +15,7 @@ class TaskCallable extends Task
     {
         $timeStart = Tools::timeInMicroseconds();
         $this->call($this->getCallable()); 
-sleep(3);                 
+                 
         return $this->postExecute($timeStart);
     }
 }
