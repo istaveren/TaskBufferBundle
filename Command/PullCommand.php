@@ -41,11 +41,11 @@ class PullCommand extends Command
     {
         $ignoreFailures = $input->getArgument( 'ignore-failures' );
         $limitFromInput = $input->getArgument( 'limit' );
-        $limit = ( !isset( $limitFromInput ) ) ? $this->container->getParameter( 'task_buffer.task_buffer.limit' ) : $limitFromInput;
+        $pullLimit = ( !isset( $limitFromInput ) ) ? $this->container->getParameter( 'task_buffer.pull_limit' ) : $limitFromInput;
          
-        $taskBuffer = $this->container->get( 'task_buffer.task_buffer' );
+        $taskBuffer = $this->container->get( 'task_buffer' );
         $taskBuffer->setOutput( $output );
-        $taskBuffer->setLimit( $limit );
+        $taskBuffer->setPullLimit( $pullLimit );
         $taskBuffer->pull( $ignoreFailures );
     }
 }

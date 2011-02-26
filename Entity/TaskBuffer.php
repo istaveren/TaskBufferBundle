@@ -10,8 +10,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TaskBuffer
 {
-    const DEFAULT_TASK_GROUP_IDENTIFIER = 'standard';
-    
     private $em;
 
     private $groups;
@@ -20,7 +18,7 @@ class TaskBuffer
 
     private $output;
 
-    private $limit = 10;
+    private $pullLimit = 10;
 
     private $priority = 100;
 
@@ -29,6 +27,8 @@ class TaskBuffer
     private $startTime;
     
     private $endTime;
+    
+    private $groupIdentifier = 'standard';
 
     public function __construct($em)
     {
@@ -41,14 +41,14 @@ class TaskBuffer
         $this->output = $output;
     }
 
-    public function setLimit($limit)
+    public function setPullLimit($pullLimit)
     {
-        $this->limit = $limit;
+        $this->pullLimit = $pullLimit;
     }
 
-    public function getLimit()
+    public function getPullLimit()
     {
-        return $this->limit;
+        return $this->pullLimit;
     }
 
     public function setPriority($priority)
@@ -61,6 +61,16 @@ class TaskBuffer
         return $this->priority;
     }
 
+    public function setGroupIdentifier($groupIdentifier)
+    {
+        $this->groupIdentifier = $groupIdentifier;
+    }
+
+    public function getGroupIdentifier()
+    {
+        return $this->groupIdentifier;
+    }
+        
     public function setFailuresLimit($failuresLimit)
     {
         $this->failuresLimit = $failuresLimit;
@@ -114,20 +124,25 @@ class TaskBuffer
         $this->em->flush();
     }
 
-    public function queue($callable, $groupIdentifier = self::DEFAULT_TASK_GROUP_IDENTIFIER)
+    public function queue($callable, $groupIdentifier = '' )
     {
-        $this->initialize($callable, $groupIdentifier);
+        $this->initialize($callable, $this->determineGroupIdentifier( $groupIdentifier ) );
         $this->flush();
     }
 
-    public function initialize($callable, $groupIdentifier = self::DEFAULT_TASK_GROUP_IDENTIFIER)
+    public function initialize($callable, $groupIdentifier = '' )
     {
-        $this->currentGroupIdentifier = $groupIdentifier;
+        $this->currentGroupIdentifier = $this->determineGroupIdentifier( $groupIdentifier );
         $this->setGroupByCurrentIdentifier();
 
         $group = (is_array($callable)) ? $this->initializeTaskForObject($callable) : $this->initializeTaskForMethod($callable);
 
         return $group;
+    }
+    
+    private function determineGroupIdentifier( $groupIdentifier )
+    {
+        return ( $groupIdentifier != '' ) ? $groupIdentifier : $this->getGroupIdentifier();
     }
 
     public function initializeTaskForObject($callableWithObject)
@@ -162,7 +177,7 @@ class TaskBuffer
         {
             $codeSuccess = Task::STATUS_SUCCESS;
             $query = $this->em->createQuery("SELECT t, tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE t.failuresLimit > t.failures AND ( ( t.startTime < CURRENT_TIME() OR t.startTime is NULL ) AND ( t.endTime > CURRENT_TIME() OR t.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY t.priority DESC, t.createdAt ASC" )
-            ->setMaxResults($this->limit);
+            ->setMaxResults($this->pullLimit);
 
             $query->setLockMode(\Doctrine\DBAL\LockMode::PESSIMISTIC_WRITE);
             $taskGroups = $query->getResult();

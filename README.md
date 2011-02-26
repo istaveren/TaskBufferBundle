@@ -37,6 +37,13 @@ For: https://github.com/symfony/symfony-sandbox rev: 00c0e57a93ba8407dd82.
 
   4. Configure the service in your config (config/app/config.yml):
 
+         ## Task Buffer configuration
+         parameters:
+             task_buffer.pull_limit: 5
+             task_buffer.priority: 100
+             task_buffer.failures_limit: 10
+             task_buffer.group_identifier: standard    
+
          ## Doctrine Configuration
          doctrine:
              dbal:
@@ -89,16 +96,18 @@ Use examples
         $someObject = new \Application\SomeBundle\Entity\SomeObject();
         $taskBuffer->queue( array( $someObject, 'someMethod' ) );
 
+
+        // Container configuration may be overriden in code.
  		// Queue invocation of $objectX->hello22().
  		// Invocation will be executed in 2 hours window. For example, if queue is executed at 11.31 
  		// the window is from 10.31 to 12.31 every day till successfull execution of the task,
  		// or untill failuresLimit is reached what gives 5 tries. 
 		// Task will not be executed if there are any tasks with higher priority awaiting, 
 		// 'higher' means number lower than 50 (0 goes first, 1000 last).  
- 		
+
  		$timeFrom = new \DateTime(date('H:i:s'));
         $timeUntil = new \DateTime(date('H:i:s'));
- 		   
+
         $taskBuffer->
             failuresLimit(5)->
             priority(50)->
@@ -111,7 +120,7 @@ Use examples
 Pulling tasks from terminal:
 
     php app/console task-buffer:pull 10
-    
+
 '10' is default quantity of tasks, an may be ommited.    
 
 TODO: more explanation!    

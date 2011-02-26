@@ -5,21 +5,27 @@
     xsi:schemaLocation="http://www.symfony-project.org/schema/dic/services http://www.symfony-project.org/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="task_buffer.task_buffer.class">Smentek\TaskBufferBundle\Entity\TaskBuffer</parameter>
-        <parameter key="task_buffer.task_buffer.limit">10</parameter>
+        <parameter key="task_buffer.class">Smentek\TaskBufferBundle\Entity\TaskBuffer</parameter>
+        <parameter key="task_buffer.pull_limit">10</parameter>
+        <parameter key="task_buffer.priority">100</parameter>
+        <parameter key="task_buffer.failures_limit">3</parameter>
+        <parameter key="task_buffer.group_identifier">standard</parameter>
     </parameters>
 
     <services>
-        <service id="task_buffer.task_buffer" class="%task_buffer.task_buffer.class%">
+        <service id="task_buffer" class="%task_buffer.class%">
         	<argument type="service" id="doctrine.orm.entity_manager" />
         	  <call method="setPriority">
-    			<argument>110</argument>
+    			<argument>%task_buffer.priority%</argument>
   			  </call>
-        	  <call method="setLimit">
-    			<argument>10</argument>
+        	  <call method="setPullLimit">
+    			<argument>%task_buffer.pull_limit%</argument>
   			  </call>
         	  <call method="setFailuresLimit">
-    			<argument>3</argument>
+    			<argument>%task_buffer.failures_limit%</argument>
+  			  </call>
+        	  <call method="setGroupIdentifier">
+    			<argument>%task_buffer.group_identifier%</argument>
   			  </call>  			  
 		</service>
     </services>
