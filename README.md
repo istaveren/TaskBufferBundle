@@ -38,14 +38,15 @@ For: https://github.com/symfony/symfony-sandbox rev: 00c0e57a93ba8407dd82.
   4. Configure the service in your config (config/app/config.yml):
 
          ## Doctrine Configuration
-         doctrine.dbal:
-             dbname:   symfony-sandbox
-             user:     dbuser
-             password: dbpass
-         doctrine.orm:
-             auto_generate_proxy_classes: %kernel.debug%
-             mappings:
-                 TaskBufferBundle: ~
+         doctrine:
+             dbal:
+                 dbname:   symfony-sandbox
+                 user:     dbuser
+                 password: dbpass
+             orm:
+                 auto_generate_proxy_classes: %kernel.debug%
+                 mappings:
+                     TaskBufferBundle: ~                     
 
   5. Configure tests if you are interested in them (app/phpunit.xml.dist):
 

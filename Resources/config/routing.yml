@@ -1,16 +1,16 @@
 task_groups:
-    pattern:  /task_groups
+    pattern:  /task-groups
     defaults: { _controller: TaskBufferBundle:TaskBuffer:taskGroups, offset: ~, limit: ~ }
     
 task_group:
-    pattern:  /task_group/{taskGroupId}
+    pattern:  /task-group/{taskGroupId}
     defaults: { _controller: TaskBufferBundle:TaskBuffer:taskGroup, task_group_id: taskGroupId }
 
 task_delete:
-    pattern:  /task_delete/{taskId}
+    pattern:  /task-delete/{taskId}
     defaults: { _controller: TaskBufferBundle:TaskBuffer:taskDelete, task_id: taskId }
     
 task_group_delete:
-    pattern:  /task_group_delete/{taskGroupId}
+    pattern:  /task-group-delete/{taskGroupId}
     defaults: { _controller: TaskBufferBundle:TaskBuffer:taskGroupDelete, task_group_id: taskGroupId }
     
