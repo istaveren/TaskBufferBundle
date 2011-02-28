@@ -151,7 +151,6 @@ class TaskBuffer
         $object = $callableWithObject[0];
         $callable = $callableWithObject[1];
 
-        //TODO: initialization form IoC Container!
         $task = new TaskCallableOnObject();
         $task = $this->initializeTask($task);
         $task->setCallable($callable);
@@ -162,7 +161,6 @@ class TaskBuffer
 
     public function initializeTaskForMethod($callable)
     {
-        //TODO: initialization form IoC Container!
         $task = new TaskCallable();
         $task = $this->initializeTask($task);
         $task->setCallable($callable);

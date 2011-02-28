@@ -22,8 +22,6 @@ class TaskGroupTest extends WebTestCase
     	$taskGroup1 = new taskGroup();
     	$taskGroup1->setTaskGroupId( 1 );
     	$taskGroup1->setIdentifier( 'standard' );
-    	$taskGroup1->setPriority( 100 );
-    	$taskGroup1->setFailuresLimit( 3 );
     	
     	$task1 = new TaskCallableOnObject();
     	$task1->setTaskId( 1 );
@@ -31,8 +29,10 @@ class TaskGroupTest extends WebTestCase
     	$task1->setCallable( 'someMethod' );
     	$task1->setStatus( Task::STATUS_AWAITING );
     	$task1->setObject( $objectX );
-    	$task1->setFailuresCount( 0 );
     	$task1->setCreatedAt( '2011-01-17 22:00:15' );
+    	$task1->setPriority( 100 );
+    	$task1->setFailuresLimit( 3 );
+    	
 
     	$taskGroup1->setTasks( array( $task1 ) );
 //    	$task2 = new Task();

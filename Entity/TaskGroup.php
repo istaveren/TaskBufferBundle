@@ -104,7 +104,7 @@ class TaskGroup
             }
             catch(\Exception $e)
             {
-                $task->setFailuresCount($task->getFailuresCount() + 1);
+                $task->setFailures($task->getFailures() + 1);
                 $task->setStatus(Task::STATUS_RUNTIME_EXCEPTION);
                 $task->setExecutedAt(date_create("now"));
                 $task->setDuration(microtime() - $timeStart);
