@@ -98,8 +98,6 @@ abstract class Task
      */
     protected $executedAt;
 
-    public abstract function __construct(){}
-    
     public abstract function execute();
 
     public function setTaskId($taskId)
@@ -294,17 +292,21 @@ abstract class Task
 	
     public function call($callable)
     {
-        if (is_callable($callable ))
+        if (is_callable($callable))
         {
             call_user_func($callable);
             $status = self::STATUS_SUCCESS;
             $this->setStatus($status);
+            $this->taskGroup->setFailureOccured(false);
+            return true;
         }
         else
         {
             $status = self::STATUS_INVALID_CALLABACK;
             $this->setstatus($status);
             $this->setFailures($this->getFailures() + 1);
+            $this->taskGroup->setFailureOccured(true);
+            return false;
         }
     }
 }

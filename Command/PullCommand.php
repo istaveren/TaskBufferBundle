@@ -1,6 +1,9 @@
 <?php
 namespace Smentek\TaskBufferBundle\Command;
 
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputDefinition;
+
 use \Symfony\Component\Console\Input\InputArgument;
 use \Symfony\Bundle\FrameworkBundle\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,17 +16,18 @@ class PullCommand extends Command
 	{
 	    $this->setName( 'task-buffer:pull' )
 			->setDescription( 'Pull tasks from Task Buffer and execute them one by one.' )
-	        ->setDefinition(array(
+	        ->setDefinition( array(
 	            new InputArgument(
 	                'limit', 
 	                InputArgument::OPTIONAL, 
-	                'Limit of tasks to pulled from Task Buffer and executed.'
+	                'Quantity of tasks executed at once.'
 	            ),
-	            new InputArgument( 
-	            	'ignore-failures', 
+	            new InputOption(
+					'stop-on-failure', 
 	            	InputArgument::OPTIONAL, 
-	            	'If false Task Buffer will not proceed in case of errors.'),
-	    	
+	            	InputOption::VALUE_NONE,
+	            	'If option is in use Task Buffer will not proceed in case of errors.'
+	            ),
 		));
 	}
 	
@@ -39,13 +43,13 @@ class PullCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $ignoreFailures = $input->getArgument( 'ignore-failures' );
-        $limitFromInput = $input->getArgument( 'limit' );
-        $pullLimit = ( !isset( $limitFromInput ) ) ? $this->container->getParameter( 'task_buffer.pull_limit' ) : $limitFromInput;
+        $stopOnFailure = $input->getOption('stop-on-failure');
+        $limitFromInput = $input->getArgument('limit');
+        $pullLimit = (!isset($limitFromInput)) ? $this->container->getParameter('task_buffer.pull_limit') : $limitFromInput;
          
-        $taskBuffer = $this->container->get( 'task_buffer' );
-        $taskBuffer->setOutput( $output );
-        $taskBuffer->setPullLimit( $pullLimit );
-        $taskBuffer->pull( $ignoreFailures );
+        $taskBuffer = $this->container->get('task_buffer');
+        $taskBuffer->setOutput($output);
+        $taskBuffer->setPullLimit($pullLimit);
+        $taskBuffer->pull($stopOnFailure);
     }
 }

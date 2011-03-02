@@ -34,6 +34,8 @@ class TaskGroup
     protected $isActive;
 
     private $output;
+    
+    private $failureOccured;
 
     public function __construct()  
     {
@@ -90,9 +92,15 @@ class TaskGroup
         $this->output = $output;
     }
 
-    public function execute($em = null, $ignoreFailures = true)
+    public function setFailureOccured( $failureOccured )
     {
-        //TODO: $ignoreFailures == false brake execution on any error!
+        $this->failureOccured = $failureOccured;
+    }
+    
+    public function execute($em = null, $stopOnFailure = false)
+    {
+        $failureOccured = false;
+
         foreach ($this->tasks as $task)
         {
             $timeStart = Tools::timeInMicroseconds();
@@ -104,13 +112,15 @@ class TaskGroup
             }
             catch(\Exception $e)
             {
+                $this->failureOccured = true;
+                
                 $task->setFailures($task->getFailures() + 1);
                 $task->setStatus(Task::STATUS_RUNTIME_EXCEPTION);
                 $task->setExecutedAt(date_create("now"));
                 $task->setDuration(microtime() - $timeStart);
                 $status = Task::STATUS_RUNTIME_EXCEPTION;
                 $message = "{$task->prefixMessage()} {$task->executionResult($status)}. ";
-                $message .= "Duration:  {$task->getDuration()} µs.";
+                $message .= "Duration:  {$task->getDuration()} µs. ";
             }
 
             if (isset($em))
@@ -119,10 +129,21 @@ class TaskGroup
                 $em->flush();
             }
 
+            if ( $stopOnFailure && $this->failureOccured )
+            {
+                $message .= "\nExecution stopped because of failure occurrence.";
+            }
+            
             if (isset($this->output))
             {
                 $this->output->write($message, 1);
             }
+            
+            if ( $stopOnFailure && $this->failureOccured )
+            {
+                break;
+            }
+            
         }
         
     }

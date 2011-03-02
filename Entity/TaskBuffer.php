@@ -168,7 +168,7 @@ class TaskBuffer
         return $this->groups->get($this->currentGroupIdentifier);
     }
 
-    public function pull($ignoreFailures)
+    public function pull($stopOnFailure)
     {
         $this->em->getConnection()->beginTransaction();
         try
@@ -183,7 +183,7 @@ class TaskBuffer
             foreach($taskGroups as $taskGroup)
             {
                 $taskGroup->setOutput($this->output);
-                $taskGroup->execute($this->em, $ignoreFailures);
+                $taskGroup->execute($this->em, $stopOnFailure);
             }
             $this->em->getConnection()->commit();
         }
