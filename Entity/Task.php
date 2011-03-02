@@ -12,7 +12,7 @@ use Smentek\TaskBufferBundle\Entity\TaskGroup;
  * @orm:Table(name="bundletaskbuffer_task")
  * @orm:HasLifecycleCallbacks
  */
-class Task
+abstract class Task
 {
     const STATUS_AWAITING = 0;
     const STATUS_SUCCESS = 1;
@@ -98,7 +98,9 @@ class Task
      */
     protected $executedAt;
 
-    public function __construct(){}
+    public abstract function __construct(){}
+    
+    public abstract function execute();
 
     public function setTaskId($taskId)
     {
