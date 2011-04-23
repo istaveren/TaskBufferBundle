@@ -55,7 +55,11 @@ For: https://github.com/symfony/symfony-sandbox rev: 00c0e57a93ba8407dd82.
                  mappings:
                      TaskBufferBundle: ~                     
 
-  5. Configure tests if you are interested in them (app/phpunit.xml.dist):
+  5. Create Doctrine schema:
+   
+          sudo php app/console doctrine:schema:create
+          
+  6. Configure tests if you are interested in them (app/phpunit.xml.dist):
 
          <testsuites>
              <testsuite name="Project Test Suite">
