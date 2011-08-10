@@ -2,17 +2,18 @@
 
 namespace Smentek\TaskBufferBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Smentek\TaskBufferBundle\Entity\Task;
 use Smentek\TaskBufferBundle\Entity\TaskGroup;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * @orm:Entity
+ * @ORM\Entity
  */
 class TaskCallableOnObject extends Task
 {
     /**
-     * @orm:Column(name="object", type="object", nullable="true")
+     * @ORM\Column(name="object", type="object", nullable="true")
      *
      * @validation:NotBlank()
      */

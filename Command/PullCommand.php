@@ -5,12 +5,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputDefinition;
 
 use \Symfony\Component\Console\Input\InputArgument;
-use \Symfony\Bundle\FrameworkBundle\Command\Command;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
-class PullCommand extends Command
+class PullCommand extends ContainerAwareCommand
 {
 	protected function configure()
 	{
@@ -47,7 +47,7 @@ class PullCommand extends Command
         $limitFromInput = $input->getArgument('limit');
         $pullLimit = (!isset($limitFromInput)) ? $this->container->getParameter('task_buffer.pull_limit') : $limitFromInput;
          
-        $taskBuffer = $this->container->get('task_buffer');
+        $taskBuffer = $this->getContainer()->get('task_buffer');
         $taskBuffer->setOutput($output);
         $taskBuffer->setPullLimit($pullLimit);
         $taskBuffer->pull($stopOnFailure);

@@ -2,34 +2,35 @@
 
 namespace Smentek\TaskBufferBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * @orm:Entity
- * @orm:Table(name="bundletaskbuffer_task_group")
+ * @ORM\Entity
+ * @ORM\Table(name="bundletaskbuffer_task_group")
  */
 class TaskGroup
 {
     /**
-     * @orm:Id
-     * @orm:Column(name="task_group_id", type="integer")
-     * @orm:GeneratedValue
+     * @ORM\Id
+     * @ORM\Column(name="task_group_id", type="integer")
+     * @ORM\GeneratedValue
      */
     protected $taskGroupId;
 
     /**
-     * @orm:Column(name="identifier", type="string", unique="true")
+     * @ORM\Column(name="identifier", type="string", unique="true")
      */
     protected $identifier;
 
     /**
-     * @orm:OneToMany(targetEntity="Task", mappedBy="taskGroup", cascade={"persist","remove"})
+     * @ORM\OneToMany(targetEntity="Task", mappedBy="taskGroup", cascade={"persist","remove"})
      */
     protected $tasks;
 
     /**
-     * @orm:Column(name="is_active", type="boolean")
+     * @ORM\Column(name="is_active", type="boolean")
      */
     protected $isActive;
 

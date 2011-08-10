@@ -2,40 +2,27 @@
 
 namespace Smentek\TaskBufferBundle\DependencyInjection;
 
-use Symfony\Component\Config\FileLocator;
-
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-//use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\Loader;
 
+/**
+ * This is the class that loads and manages your bundle configuration
+ *
+ * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
+ */
 class TaskBufferExtension extends Extension
 {
-    public function load(array $config, ContainerBuilder $container)
-    {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('task_buffer.xml');
-    }
-
     /**
-	* Returns the base path for the XSD files.
-	*
-	* @return string The XSD base path
-	*/
-    public function getXsdValidationBasePath()
+     * {@inheritDoc}
+     */
+    public function load(array $configs, ContainerBuilder $container)
     {
-        return null;
-    }
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
 
-    public function getNamespace()
-    {
-        return 'http://www.symfony-project.org/schema/dic/symfony';
+        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.xml');
     }
-
-    public function getAlias()
-    {
-        return 'task_buffer';
-    }
-
 }

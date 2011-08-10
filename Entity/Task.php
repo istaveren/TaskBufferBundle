@@ -2,15 +2,16 @@
 
 namespace Smentek\TaskBufferBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Smentek\TaskBufferBundle\Entity\TaskGroup;
 
 /**
- * @orm:Entity
- * @orm:InheritanceType("SINGLE_TABLE")
- * @orm:DiscriminatorColumn(name="discr", type="string")
- * @orm:DiscriminatorMap({"task_callable" = "TaskCallable", "task_callable_on_object" = "TaskCallableOnObject"})
- * @orm:Table(name="bundletaskbuffer_task")
- * @orm:HasLifecycleCallbacks
+ * @ORM\Entity
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({"task_callable" = "TaskCallable", "task_callable_on_object" = "TaskCallableOnObject"})
+ * @ORM\Table(name="bundletaskbuffer_task")
+ * @ORM\HasLifecycleCallbacks
  */
 abstract class Task
 {
@@ -21,9 +22,9 @@ abstract class Task
     const STATUS_RUNTIME_EXCEPTION = 4;
 
     /**
-     * @orm:Id
-     * @orm:Column(name="task_id", type="integer")
-     * @orm:GeneratedValue
+     * @ORM\Id
+     * @ORM\Column(name="task_id", type="integer")
+     * @ORM\GeneratedValue
      */
     protected $taskId;
 
@@ -32,18 +33,18 @@ abstract class Task
     //"There is a general performance consideration with Single Table Inheritance: If you use a STI entity as a many-to-one or one-to-one entity you should never use one of the classes at the upper levels of the inheritance hierachy as “targetEntity”, only those that have no subclasses. Otherwise Doctrine CANNOT create proxy instances of this entity and will ALWAYS load the entity eagerly."
     
     /**
-     * @orm:ManyToOne(targetEntity="TaskGroup", inversedBy="tasks", cascade={"persist"})
-     * @orm:JoinColumn(name="task_group_id", referencedColumnName="task_group_id")
+     * @ORM\ManyToOne(targetEntity="TaskGroup", inversedBy="tasks", cascade={"persist"})
+     * @ORM\JoinColumn(name="task_group_id", referencedColumnName="task_group_id")
      */
     protected $taskGroup;
 
     /**
-     * @orm:Column(name="callable", type="string", length="255")
+     * @ORM\Column(name="callable", type="string", length="255")
      */
     protected $callable;
 
     /**
-     * @orm:Column(name="duration", type="bigint", nullable="true")
+     * @ORM\Column(name="duration", type="bigint", nullable="true")
      */
     protected $duration;
 
@@ -51,24 +52,24 @@ abstract class Task
      *
      * 	@var integer $status - AWAITING|SUCCESS|INVALID_CALLABACK|RUNTIME_EXCEPTION
      *
-     * @orm:Column(name="status", type="integer", nullable="false");
+     * @ORM\Column(name="status", type="integer", nullable="false");
      */
     protected $status;
 
     /**
-     * @orm:Column(name="failures_limit", type="integer")
+     * @ORM\Column(name="failures_limit", type="integer")
      */
     protected $failuresLimit;
 
     /**
-     * @orm:Column(name="failures", type="integer")
+     * @ORM\Column(name="failures", type="integer")
      */
     protected $failures;
     
     /**
      * Tasks with higher priority take precedence over tasks with lower priority.
      *
-     * @orm:Column(name="priority", type="integer")
+     * @ORM\Column(name="priority", type="integer")
      *
      * @validation:NotBlank()
      * @validation:Min(0)
@@ -77,24 +78,24 @@ abstract class Task
     protected $priority;
 
     /**
-     * @orm:Column(name="start_time", type="time", nullable="true")
+     * @ORM\Column(name="start_time", type="time", nullable="true")
      */
     protected $startTime;
 
     /**
-     * @orm:Column(name="end_time", type="time", nullable="true")
+     * @ORM\Column(name="end_time", type="time", nullable="true")
      */
     protected $endTime;
 
     /**
-     * @orm:Column(name="created_at", type="datetime")
+     * @ORM\Column(name="created_at", type="datetime")
      *
      * @validation:NotBlank()
      */
     protected $createdAt;
 
     /**
-     * @orm:Column(name="executed_at", type="datetime", nullable="true")
+     * @ORM\Column(name="executed_at", type="datetime", nullable="true")
      */
     protected $executedAt;
 
@@ -184,7 +185,7 @@ abstract class Task
     }
     
     /**
-     * @orm:PrePersist
+     * @ORM\PrePersist
      */
     public function autogenerateCreatedAt()
     {

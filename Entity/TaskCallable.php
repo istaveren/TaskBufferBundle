@@ -2,12 +2,13 @@
 
 namespace Smentek\TaskBufferBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Smentek\TaskBufferBundle\Entity\Task;
 use Smentek\TaskBufferBundle\Entity\TaskGroup;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * @orm:Entity
+ * @ORM\Entity
  */
 class TaskCallable extends Task
 {
