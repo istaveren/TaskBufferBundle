@@ -20,7 +20,7 @@ class TaskGroup
     protected $taskGroupId;
 
     /**
-     * @ORM\Column(name="identifier", type="string", unique="true")
+     * @ORM\Column(name="identifier", type="string", unique=true)
      */
     protected $identifier;
 

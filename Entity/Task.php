@@ -4,6 +4,7 @@ namespace Smentek\TaskBufferBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Smentek\TaskBufferBundle\Entity\TaskGroup;
+use Symfony\Component\Validator\Constraints as Validation;
 
 /**
  * @ORM\Entity
@@ -39,12 +40,12 @@ abstract class Task
     protected $taskGroup;
 
     /**
-     * @ORM\Column(name="callable", type="string", length="255")
+     * @ORM\Column(name="callable", type="string", length=255)
      */
     protected $callable;
 
     /**
-     * @ORM\Column(name="duration", type="bigint", nullable="true")
+     * @ORM\Column(name="duration", type="bigint", nullable=true)
      */
     protected $duration;
 
@@ -52,7 +53,7 @@ abstract class Task
      *
      * 	@var integer $status - AWAITING|SUCCESS|INVALID_CALLABACK|RUNTIME_EXCEPTION
      *
-     * @ORM\Column(name="status", type="integer", nullable="false");
+     * @ORM\Column(name="status", type="integer", nullable=false);
      */
     protected $status;
 
@@ -71,31 +72,31 @@ abstract class Task
      *
      * @ORM\Column(name="priority", type="integer")
      *
-     * @validation:NotBlank()
-     * @validation:Min(0)
-     * @validation:Max(1000)
+     * @Validation\NotBlank()
+     * @Validation\Min(0)
+     * @Validation\Max(1000)
      */
     protected $priority;
 
     /**
-     * @ORM\Column(name="start_time", type="time", nullable="true")
+     * @ORM\Column(name="start_time", type="time", nullable=true)
      */
     protected $startTime;
 
     /**
-     * @ORM\Column(name="end_time", type="time", nullable="true")
+     * @ORM\Column(name="end_time", type="time", nullable=true)
      */
     protected $endTime;
 
     /**
      * @ORM\Column(name="created_at", type="datetime")
      *
-     * @validation:NotBlank()
+     * @Validation\NotBlank()
      */
     protected $createdAt;
 
     /**
-     * @ORM\Column(name="executed_at", type="datetime", nullable="true")
+     * @ORM\Column(name="executed_at", type="datetime", nullable=true)
      */
     protected $executedAt;
 
