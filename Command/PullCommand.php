@@ -45,7 +45,7 @@ class PullCommand extends ContainerAwareCommand
     {
         $stopOnFailure = $input->getOption('stop-on-failure');
         $limitFromInput = $input->getArgument('limit');
-        $pullLimit = (!isset($limitFromInput)) ? $this->container->getParameter('task_buffer.pull_limit') : $limitFromInput;
+        $pullLimit = (!isset($limitFromInput)) ? $this->getContainer()->getParameter('task_buffer.pull_limit') : $limitFromInput;
          
         $taskBuffer = $this->getContainer()->get('task_buffer');
         $taskBuffer->setOutput($output);
