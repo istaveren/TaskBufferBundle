@@ -203,6 +203,8 @@ class TaskBuffer
         {
             $groups = $this->em->createQuery("SELECT tg FROM Smentek\TaskBufferBundle\Entity\TaskGroup tg WHERE tg.identifier = '$this->currentGroupIdentifier'")->getResult();
             $group = (isset($groups[0]) && $groups[0] instanceof TaskGroup) ? $this->actualizeGroup( $groups[0] ) : $this->initializeGroup();
+            $this->em->persist($group);
+            
             $this->groups->set($this->currentGroupIdentifier, $group);
         }
     }
@@ -245,7 +247,7 @@ class TaskBuffer
         $group = new TaskGroup();
         $group->setIdentifier($this->currentGroupIdentifier);
         $group->setIsActive(true);
-
+        
         return $group;
     }
 
