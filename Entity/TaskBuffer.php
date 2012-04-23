@@ -155,6 +155,7 @@ class TaskBuffer
         $task = $this->initializeTask($task);
         $task->setCallable($callable);
         $task->setObject($object);
+        $this->em->persist($task);
 
         return $this->groups->get($this->currentGroupIdentifier);
     }
@@ -164,6 +165,7 @@ class TaskBuffer
         $task = new TaskCallable();
         $task = $this->initializeTask($task);
         $task->setCallable($callable);
+        $this->em->persist($task);
 
         return $this->groups->get($this->currentGroupIdentifier);
     }
@@ -182,10 +184,11 @@ class TaskBuffer
             $query->setLockMode(\Doctrine\DBAL\LockMode::PESSIMISTIC_WRITE);
             $taskGroups = $query->getResult();
 
-            foreach($taskGroups as $taskGroup)
+            foreach ($taskGroups as $taskGroup)
             {
                 $taskGroup->setOutput($this->output);
                 $taskGroup->execute($this->em, $stopOnFailure);
+
             }
             $this->em->getConnection()->commit();
         }
@@ -203,7 +206,6 @@ class TaskBuffer
         {
             $groups = $this->em->createQuery("SELECT tg FROM Smentek\TaskBufferBundle\Entity\TaskGroup tg WHERE tg.identifier = '$this->currentGroupIdentifier'")->getResult();
             $group = (isset($groups[0]) && $groups[0] instanceof TaskGroup) ? $this->actualizeGroup( $groups[0] ) : $this->initializeGroup();
-            $this->em->persist($group);
             
             $this->groups->set($this->currentGroupIdentifier, $group);
         }

@@ -138,14 +138,17 @@ class TaskGroup
     public function execute($em = null, $stopOnFailure = false)
     {
         $failureOccured = false;
-\Doctrine\Common\Util\Debug::dump($this);
+// \Doctrine\Common\Util\Debug::dump($this);
+        
         foreach ($this->tasks as $task)
         {
             $timeStart = Tools::timeInMicroseconds();
-
+            
             try
             {
+              $message = '';
                 $message = $task->execute($em);
+              
                 $task->setStatus(Task::STATUS_SUCCESS);
                 echo "Ok $message";
             }
@@ -187,5 +190,15 @@ class TaskGroup
             
         }
         
+    }
+    
+    /**
+     * The string representation.
+     * 
+     * @return string
+     */
+    public function __toString()
+    {
+      return "{$this->getTaskGroupId()} {$this->getIdentifier()}";
     }
 }

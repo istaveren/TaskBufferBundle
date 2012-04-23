@@ -100,6 +100,16 @@ abstract class Task
      */
     protected $executedAt;
 
+    /**
+     * The string representation.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+      return "Task: {$this->getTaskId()} '".$this->getCallable()."' class: ".get_class($this);
+    }
+    
     public abstract function execute($em = null);
 
     public function setTaskId($taskId)
@@ -130,16 +140,6 @@ abstract class Task
     public function getType()
     {
         return $this->type;
-    }
-
-    public function setGroupIdentifier($groupIdentifier)
-    {
-        $this->groupIdentifier = $groupIdentifier;
-    }
-
-    public function getGroupIdentifier()
-    {
-        return $this->groupIdentifier;
     }
 
     public function setCallable($callable)
