@@ -38,64 +38,101 @@ class TaskGroup
     
     private $failureOccured;
 
-    public function __construct()  
+    public function __construct()
     {
         $this->tasks = new ArrayCollection();
     }
-
-    public function setTaskGroupId($taskGroupId)
-    {
-        $this->taskGroupId = $taskGroupId;
-    }
-
+    
+    /**
+     * Get taskGroupId
+     *
+     * @return integer
+     */
     public function getTaskGroupId()
     {
-        return $this->taskGroupId;
+      return $this->taskGroupId;
     }
-
+    
+    /**
+     * Set identifier
+     *
+     * @param string $identifier
+     * @return TaskGroup
+     */
     public function setIdentifier($identifier)
     {
-        $this->identifier = $identifier;
+      $this->identifier = $identifier;
+      return $this;
     }
-
-    public function getidentifier()
+    
+    /**
+     * Get identifier
+     *
+     * @return string
+     */
+    public function getIdentifier()
     {
-        return $this->identifier;
+      return $this->identifier;
     }
-
-    public function setTasks($tasks)
-    {
-        $this->tasks = $tasks;
-    }
-
-    public function getTasks()
-    {
-        return $this->tasks;
-    }
-
-    public function addTask(Task $task)
-    {
-        $this->tasks->add($task);
-    }
-
-    public function getIsActive()
-    {
-        return $this->isActive;
-    }
-
+    
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     * @return TaskGroup
+     */
     public function setIsActive($isActive)
     {
-        $this->isActive = $isActive;
+      $this->isActive = $isActive;
+      return $this;
+    }
+    
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+      return $this->isActive;
+    }
+    
+    /**
+     * Add tasks
+     *
+     * @param Smentek\TaskBufferBundle\Entity\Task $tasks
+     */
+    public function addTask(\Smentek\TaskBufferBundle\Entity\Task $tasks)
+    {
+      $this->tasks[] = $tasks;
+    }
+    
+    /**
+     * Get tasks
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getTasks()
+    {
+      return $this->tasks;
     }
 
+    /**
+     * Set output buffer
+     * @param OutputInterface $output
+     */
     public function setOutput(OutputInterface $output)
     {
-        $this->output = $output;
+      $this->output = $output;
     }
-
-    public function setFailureOccured( $failureOccured )
+    
+    /**
+     * Set if there was a failure
+     * @param bool $failureOccured
+     */
+    public function setFailureOccured($failureOccured)
     {
-        $this->failureOccured = $failureOccured;
+      $this->failureOccured = $failureOccured;
     }
     
     public function execute($em = null, $stopOnFailure = false)
@@ -108,8 +145,9 @@ class TaskGroup
 
             try
             {
-                $message = $task->execute();
+                $message = $task->execute($em);
                 $task->setStatus(Task::STATUS_SUCCESS);
+                echo "Ok $message";
             }
             catch(\Exception $e)
             {
@@ -121,13 +159,14 @@ class TaskGroup
                 $task->setDuration(microtime() - $timeStart);
                 $status = Task::STATUS_RUNTIME_EXCEPTION;
                 $message = "{$task->prefixMessage()} {$task->executionResult($status)}. ";
+                $message .= "Message: '".$e->getMessage()."'. ";
                 $message .= "Duration:  {$task->getDuration()} µs. ";
             }
 
             if (isset($em))
             {
-                $em->persist($task);
-                $em->flush();
+              $em->persist($task);
+              $em->flush();
             }
 
             if ( $stopOnFailure && $this->failureOccured )

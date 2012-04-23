@@ -126,7 +126,7 @@ class TaskBuffer
 
     public function queue($callable, $groupIdentifier = '' )
     {
-        $this->initialize($callable, $this->determineGroupIdentifier( $groupIdentifier ) );
+        $this->initialize($callable, $groupIdentifier);
         $this->flush();
     }
 
@@ -174,8 +174,10 @@ class TaskBuffer
         try
         {
             $codeSuccess = Task::STATUS_SUCCESS;
-            $query = $this->em->createQuery("SELECT t, tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg JOIN tg.tasks t WHERE t.failuresLimit > t.failures AND ( ( t.startTime < CURRENT_TIME() OR t.startTime is NULL ) AND ( t.endTime > CURRENT_TIME() OR t.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY t.priority DESC, t.createdAt ASC" )
-            ->setMaxResults($this->pullLimit);
+            $query = $this->em->createQuery("SELECT t, tg FROM \Smentek\TaskBufferBundle\Entity\TaskGroup tg 
+                                             JOIN tg.tasks t 
+                                             WHERE t.failuresLimit > t.failures AND ( ( t.startTime < CURRENT_TIME() OR t.startTime is NULL ) AND ( t.endTime > CURRENT_TIME() OR t.endTime is NULL ) ) AND ( t.status IS NULL OR t.status != {$codeSuccess} ) ORDER BY t.priority DESC, t.createdAt ASC" )
+              ->setMaxResults($this->pullLimit);
 
             $query->setLockMode(\Doctrine\DBAL\LockMode::PESSIMISTIC_WRITE);
             $taskGroups = $query->getResult();

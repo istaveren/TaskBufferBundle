@@ -20,21 +20,40 @@ class TaskCallableOnObject extends Task
      */
     protected $object;
     
-    public function setObject($object)
-    {
-        $this->object = $object;
-    }
-
-    public function getObject()
-    {
-        return $this->object;
-    }
-
-    public function execute()
+    public function execute($em = null)
     {
         $timeStart = Tools::timeInMicroseconds();
+        
+        $obj = $this->getObject();
+        if ($em && method_exists($obj, 'setEntityManager'))
+        {
+          $obj->setEntityManager($em);
+        }
+        
         $this->call(array( $this->getObject(), $this->getCallable())); 
         
         return $this->postExecute($timeStart);
+    }
+
+    /**
+     * Set object
+     *
+     * @param object $object
+     * @return TaskCallableOnObject
+     */
+    public function setObject($object)
+    {
+        $this->object = $object;
+        return $this;
+    }
+
+    /**
+     * Get object
+     *
+     * @return object 
+     */
+    public function getObject()
+    {
+        return $this->object;
     }
 }

@@ -100,7 +100,7 @@ abstract class Task
      */
     protected $executedAt;
 
-    public abstract function execute();
+    public abstract function execute($em = null);
 
     public function setTaskId($taskId)
     {

@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class TaskCallable extends Task
 {
-    public function execute()
+    public function execute($em = null)
     {
         $timeStart = Tools::timeInMicroseconds();
         $this->call($this->getCallable()); 
