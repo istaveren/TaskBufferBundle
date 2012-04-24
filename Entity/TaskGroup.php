@@ -138,8 +138,7 @@ class TaskGroup
     public function execute($em = null, $stopOnFailure = false)
     {
         $failureOccured = false;
-// \Doctrine\Common\Util\Debug::dump($this);
-        
+
         foreach ($this->tasks as $task)
         {
             $timeStart = Tools::timeInMicroseconds();
@@ -169,7 +168,6 @@ class TaskGroup
             if (isset($em))
             {
               $em->persist($task);
-              \Doctrine\Common\Util\Debug::dump($task);
               $em->flush();
             }
 

@@ -27,18 +27,12 @@ class TaskCallableOnObject extends Task
         $obj = $this->getObject();
         if ($em && method_exists($obj, 'setEntityManager'))
         {
-          $obj = clone $obj;
           $obj->setEntityManager($em);
         }
         
-        //$this->call(array( $obj, $this->getCallable())); 
+        $this->call(array($obj, $this->getCallable())); 
         
-        unset($obj);
-        $strReturn = $this->postExecute($timeStart);
-        
-        //$em->persist($this);
-        
-        return $strReturn;
+        return $this->postExecute($timeStart);
     }
 
     /**
