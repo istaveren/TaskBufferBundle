@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Validation;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({"task_callable" = "TaskCallable", "task_callable_on_object" = "TaskCallableOnObject"})
- * @ORM\Table(name="bundletaskbuffer_task")
+ * @ORM\Table(name="bundletaskbuffer_task", indexes={@ORM\index(name="prio", columns={"priority"}), @ORM\index(name="discr", columns={"discr"}), @ORM\index(name="endtime", columns={"end_time"}), @ORM\index(name="starttime", columns={"start_time"}), @ORM\index(name="status", columns={"status"})})
  * @ORM\HasLifecycleCallbacks
  */
 abstract class Task
