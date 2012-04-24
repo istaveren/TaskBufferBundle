@@ -38,6 +38,8 @@ class TaskBufferController extends Controller
         $statusRuntimeExceptionQuantityQuery = $em->createQuery( "SELECT COUNT(t.taskId) as success_quantity FROM \Smentek\TaskBufferBundle\Entity\Task t WHERE t.status = {$statusRuntimeException}" );
         $statusRuntimeExceptionQuantity = $statusRuntimeExceptionQuantityQuery->getSingleScalarResult();
 
+        $form = $this->createDateForm();
+        
         $viewResult = array(
 		    'statusSuccessQuantity' => $statusSuccessQuantity,
 		    'statusAwaitingQuantity' => $statusAwaitingQuantity,
@@ -45,11 +47,23 @@ class TaskBufferController extends Controller
 		    'statusRuntimeExceptionQuantity' => $statusRuntimeExceptionQuantity,
 		    'taskGroups' => $taskGroups,
             'quantity_of_task_groups' => $quantityOfTaskGroups,
+            'form' => $form->createView(),
         );
 
         return $this->render('TaskBufferBundle:TaskBuffer:task_groups.html.twig', $viewResult);
     }
 
+    /**
+     * Create date form
+     * @return Form
+     */
+    protected function createDateForm()
+    {
+      return $this->createFormBuilder(array('fromDate' => new \DateTime('-7 days')))
+        ->add('fromDate', 'date')
+        ->getForm();
+    }
+    
     public function taskGroupAction( $taskGroupId )
     {
         $em = $this->get('doctrine.orm.entity_manager');
@@ -87,7 +101,6 @@ class TaskBufferController extends Controller
     {
         $em = $this->get('doctrine.orm.entity_manager');
 
-        $em = $this->get('doctrine.orm.entity_manager');
         $task = $em->find('\Smentek\TaskBufferBundle\Entity\Task', $taskId);
 
         $taskGroup = $task->getTaskGroup();
@@ -101,8 +114,6 @@ class TaskBufferController extends Controller
     public function taskGroupDeleteAction( $taskGroupId )
     {
         $em = $this->get('doctrine.orm.entity_manager');
-
-        $em = $this->get('doctrine.orm.entity_manager');
         $taskGroup = $em->find('\Smentek\TaskBufferBundle\Entity\TaskGroup', $taskGroupId);
 
         $em->remove($taskGroup);
@@ -110,5 +121,31 @@ class TaskBufferController extends Controller
 
         return $this->redirect($this->generateUrl('task_groups'));
     }
-
+    
+    /**
+     * Delete old sucesfull tasks
+     */
+    public function deleteOldTasksAction()
+    {
+      $taskBuffer = $this->container->get('task_buffer');
+      $form = $this->createDateForm();
+      if ($this->getRequest()->getMethod() == 'POST')
+      {
+        $form->bindRequest($this->getRequest());
+        
+        if ($form->isValid())
+        {
+          // perform some action, such as saving the task to the database
+          $dateobj = $form->get('fromDate');
+          $taskBuffer->clean($dateobj->getData());
+          $this->get('session')->setFlash('notice', 'Records are cleaned!');
+        }
+        else
+        {
+          $this->get('session')->setFlash('notice', 'Form invalid!');
+        }
+      }
+      
+      return $this->redirect($this->generateUrl('task_groups'));
+    }
 }

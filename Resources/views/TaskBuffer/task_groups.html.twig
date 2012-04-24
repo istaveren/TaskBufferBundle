@@ -2,6 +2,12 @@
     {% include "TaskBufferBundle:TaskBuffer:menu.html.twig" %}
 {% endblock %}
 
+{% if app.session.hasFlash('notice') %}
+    <div class="flash-notice">
+        {{ app.session.flash('notice') }}
+    </div>
+{% endif %}
+
 <div>
 	<h4>Tasks by status</h4>
 	{% block status_quantity %}

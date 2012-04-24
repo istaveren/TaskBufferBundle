@@ -14,3 +14,8 @@ task_group_delete:
     pattern:  /task-group-delete/{taskGroupId}
     defaults: { _controller: TaskBufferBundle:TaskBuffer:taskGroupDelete, task_group_id: taskGroupId }
     
+    
+task_delete_old:
+    pattern:  /delete-old-tasks
+    defaults: { _controller: TaskBufferBundle:TaskBuffer:deleteOldTasks}
+  

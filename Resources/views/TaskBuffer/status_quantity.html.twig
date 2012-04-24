@@ -1,4 +1,15 @@
 <div>Success: <b>{{statusSuccessQuantity}}</b>,
 Awaiting: <b>{{statusAwaitingQuantity}}</b>,
 Invalid callback: <b>{{statusInvalidCallbackQuantity}}</b>,
-Runtime exception: <b>{{statusRuntimeExceptionQuantity}}</b>.</div>
+Runtime exception: <b>{{statusRuntimeExceptionQuantity}}</b>.
+{%  if statusSuccessQuantity %}
+<div>
+  Delete successfull tasks
+  <form action="{{ path('task_delete_old') }}" method="post" {{ form_enctype(form) }}>
+      {{ form_widget(form) }}
+  
+      <input type="submit" />
+  </form>
+</div>
+{% endif %}
+</div>

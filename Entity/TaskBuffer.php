@@ -10,6 +10,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TaskBuffer
 {
+    /**
+     * @var EntityManager
+     */
     private $em;
 
     private $groups;
@@ -253,4 +256,16 @@ class TaskBuffer
         return $group;
     }
 
+    /**
+     * Remove all succesfull finished tasks
+     * 
+     * @param \DateTime $olderThen
+     */
+    public function clean(\DateTime $olderThen)
+    {
+      $codeSuccess = Task::STATUS_SUCCESS;
+      $query = $this->em->createQuery("DELETE FROM \Smentek\TaskBufferBundle\Entity\Task t
+                                       WHERE t.status = $codeSuccess AND t.executedAt < :exDate" );
+      $query->execute(array('exDate' => $olderThen));
+    }
 }
