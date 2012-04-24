@@ -25,7 +25,7 @@ class TaskGroup
     protected $identifier;
 
     /**
-     * @ORM\OneToMany(targetEntity="Task", mappedBy="taskGroup")
+     * @ORM\OneToMany(targetEntity="Task", mappedBy="taskGroup", cascade="remove")
      */
     protected $tasks;
 
@@ -149,7 +149,6 @@ class TaskGroup
                 $message = $task->execute($em);
               
                 $task->setStatus(Task::STATUS_SUCCESS);
-                echo "Ok $message";
             }
             catch(\Exception $e)
             {
