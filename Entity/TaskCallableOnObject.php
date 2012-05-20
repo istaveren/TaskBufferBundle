@@ -20,17 +20,33 @@ class TaskCallableOnObject extends Task
      */
     protected $object;
     
-    public function execute($em = null)
+    public function execute($em = null, $mailer = null)
     {
         $timeStart = Tools::timeInMicroseconds();
         
         $obj = $this->getObject();
-        if ($em && method_exists($obj, 'setEntityManager'))
-        {
-          $obj->setEntityManager($em);
-        }
         
-        $this->call(array($obj, $this->getCallable())); 
+        if ($obj instanceof \Swift_Message
+            &&
+            $mailer)
+        {
+          $mailer->send($obj);
+          $this->setStatus(self::STATUS_SUCCESS);
+          $this->taskGroup->setFailureOccured(false);
+        }
+        else 
+        {
+          if ($em && method_exists($obj, 'setEntityManager'))
+          {
+            $obj->setEntityManager($em);
+          }
+          if ($mailer && method_exists($obj, 'setMailer'))
+          {
+            $obj->setMailer($mailer);
+          }
+          
+          $this->call(array($obj, $this->getCallable()));
+        } 
         
         return $this->postExecute($timeStart);
     }

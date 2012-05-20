@@ -32,11 +32,14 @@ class TaskBuffer
     private $endTime;
     
     private $groupIdentifier = 'standard';
+    
+    private $mailer;
 
-    public function __construct($em)
+    public function __construct($em, $mailer)
     {
         $this->em = $em;
         $this->groups = new ArrayCollection();
+        $this->mailer = $mailer;
     }
 
     public function setOutput(OutputInterface $output)
@@ -176,6 +179,7 @@ class TaskBuffer
     public function pull($stopOnFailure)
     {
         $this->em->getConnection()->beginTransaction();
+        
         try
         {
             $codeSuccess = Task::STATUS_SUCCESS;
@@ -190,6 +194,7 @@ class TaskBuffer
             foreach ($taskGroups as $taskGroup)
             {
                 $taskGroup->setOutput($this->output);
+                $taskGroup->setMailer($this->mailer);
                 $taskGroup->execute($this->em, $stopOnFailure);
 
             }

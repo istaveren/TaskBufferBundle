@@ -99,7 +99,7 @@ abstract class Task
      * @ORM\Column(name="executed_at", type="datetime", nullable=true)
      */
     protected $executedAt;
-
+    
     /**
      * The string representation.
      *
@@ -110,7 +110,7 @@ abstract class Task
       return "Task: {$this->getTaskId()} '".$this->getCallable()."' class: ".get_class($this);
     }
     
-    public abstract function execute($em = null);
+    public abstract function execute($em = null, $mailer = null);
 
     public function setTaskId($taskId)
     {

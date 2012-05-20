@@ -37,6 +37,8 @@ class TaskGroup
     private $output;
     
     private $failureOccured;
+    
+    private $mailer;
 
     public function __construct()
     {
@@ -127,6 +129,15 @@ class TaskGroup
     }
     
     /**
+     * Set the mailer for sendin mails from the queue
+     * @param mixed $mailer
+     */
+    public function setMailer($mailer)
+    {
+      $this->mailer = $mailer;
+    }
+    
+    /**
      * Set if there was a failure
      * @param bool $failureOccured
      */
@@ -146,7 +157,7 @@ class TaskGroup
             try
             {
               $message = '';
-                $message = $task->execute($em);
+                $message = $task->execute($em, $this->mailer);
               
                 $task->setStatus(Task::STATUS_SUCCESS);
             }

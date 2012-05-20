@@ -15,6 +15,7 @@
     <services>
         <service id="task_buffer" class="%task_buffer.class%">
         	<argument type="service" id="doctrine.orm.entity_manager" />
+        	<argument type="service" id="swiftmailer.mailer" />
         	  <call method="setPriority">
     			<argument>%task_buffer.priority%</argument>
   			  </call>
