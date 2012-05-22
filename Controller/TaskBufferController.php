@@ -2,6 +2,14 @@
 
 namespace Smentek\TaskBufferBundle\Controller;
 
+use Symfony\Component\Console\Output\StreamOutput;
+
+use n3b\Bundle\Util\HttpFoundation\StreamResponse\FileWriter;
+
+use n3b\Bundle\Util\HttpFoundation\StreamResponse\StreamResponse;
+
+use Gaufrette\StreamWrapper;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Smentek\TaskBufferBundle\Entity\TaskBuffer;
 use Smentek\TaskBufferBundle\Entity\Task;
@@ -147,5 +155,21 @@ class TaskBufferController extends Controller
       }
       
       return $this->redirect($this->generateUrl('task_groups'));
+    }
+    
+    public function pullAction($limit = 10, $stop = false)
+    {
+      $stream = new StreamOutput(tmpfile());
+      
+      // Get instance of matchengine
+      $this->container->get('projectx.match_engine');
+      $taskBuffer = $this->container->get('task_buffer');
+      $taskBuffer->setOutput($stream);
+      $taskBuffer->setPullLimit($limit);
+      $taskBuffer->pull($stop);
+      
+      $output = fread($stream->getStream(), 3000);
+      
+      return $this->render('TaskBufferBundle:TaskBuffer:pull.html.twig', array('output' => $output));
     }
 }
