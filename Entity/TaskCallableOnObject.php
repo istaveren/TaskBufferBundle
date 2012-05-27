@@ -44,6 +44,10 @@ class TaskCallableOnObject extends Task
           {
             $obj->setMailer($mailer);
           }
+          if (method_exists($obj, 'setQueueCreate'))
+          {
+            $obj->setQueueCreate($this->getCreatedAt());
+          }
           
           $this->call(array($obj, $this->getCallable()));
         } 
