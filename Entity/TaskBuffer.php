@@ -2,13 +2,15 @@
 
 namespace Smentek\TaskBufferBundle\Entity;
 
+use Symfony\Component\DependencyInjection\ContainerAware;
+
 use Smentek\TaskBufferBundle\Entity\Task;
 use Smentek\TaskBufferBundle\Entity\TaskGroup;
 use Smentek\TaskBufferBundle\Entity\TaskBufferException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class TaskBuffer
+class TaskBuffer extends ContainerAware
 {
     /**
      * @var EntityManager
@@ -195,6 +197,7 @@ class TaskBuffer
             {
                 $taskGroup->setOutput($this->output);
                 $taskGroup->setMailer($this->mailer);
+                $taskGroup->setContainer($this->container);
                 $taskGroup->execute($this->em, $stopOnFailure);
 
             }

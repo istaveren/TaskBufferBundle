@@ -2,6 +2,8 @@
 
 namespace Smentek\TaskBufferBundle\Entity;
 
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+
 use Doctrine\ORM\Mapping as ORM;
 use Smentek\TaskBufferBundle\Entity\Task;
 use Smentek\TaskBufferBundle\Entity\TaskGroup;
@@ -47,6 +49,10 @@ class TaskCallableOnObject extends Task
           if (method_exists($obj, 'setQueueCreate'))
           {
             $obj->setQueueCreate($this->getCreatedAt());
+          }
+          if ($obj instanceof ContainerAwareInterface)
+          {
+            $obj->setContainer($this->container);
           }
           
           $this->call(array($obj, $this->getCallable()));

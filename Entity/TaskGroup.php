@@ -2,6 +2,8 @@
 
 namespace Smentek\TaskBufferBundle\Entity;
 
+use Symfony\Component\DependencyInjection\ContainerAware;
+
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -10,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @ORM\Entity
  * @ORM\Table(name="bundletaskbuffer_task_group")
  */
-class TaskGroup
+class TaskGroup extends ContainerAware
 {
     /**
      * @ORM\Id
@@ -156,6 +158,7 @@ class TaskGroup
             
             try
             {
+              $task->setContainer($this->container);
               $message = '';
                 $message = $task->execute($em, $this->mailer);
               

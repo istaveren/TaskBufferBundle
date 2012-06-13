@@ -2,6 +2,8 @@
 
 namespace Smentek\TaskBufferBundle\Entity;
 
+use Symfony\Component\DependencyInjection\ContainerAware;
+
 use Doctrine\ORM\Mapping as ORM;
 use Smentek\TaskBufferBundle\Entity\TaskGroup;
 use Symfony\Component\Validator\Constraints as Validation;
@@ -14,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Validation;
  * @ORM\Table(name="bundletaskbuffer_task", indexes={@ORM\index(name="prio", columns={"priority"}), @ORM\index(name="discr", columns={"discr"}), @ORM\index(name="endtime", columns={"end_time"}), @ORM\index(name="starttime", columns={"start_time"}), @ORM\index(name="status", columns={"status"})})
  * @ORM\HasLifecycleCallbacks
  */
-abstract class Task
+abstract class Task extends ContainerAware
 {
     const STATUS_AWAITING = 0;
     const STATUS_SUCCESS = 1;
