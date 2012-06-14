@@ -164,6 +164,7 @@ class TaskBufferController extends Controller
       // Get instance of matchengine
       $this->container->get('projectx.match_engine');
       $taskBuffer = $this->container->get('task_buffer');
+      $taskBuffer->setContainer($this->container);
       $taskBuffer->setOutput($stream);
       $taskBuffer->setPullLimit($limit);
       $taskBuffer->pull($stop);
